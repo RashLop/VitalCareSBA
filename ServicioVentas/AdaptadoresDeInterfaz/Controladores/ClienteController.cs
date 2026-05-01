@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using ServicioVentas.AdaptadoresDeInterfaz.DTOs;
 using ServicioVentas.CasosDeUso.PuertosEntrada;
+using ServicioVentas.Entidades;
 
 namespace ServicioVentas.AdaptadoresDeInterfaz.Controladores
 {
@@ -24,37 +24,38 @@ namespace ServicioVentas.AdaptadoresDeInterfaz.Controladores
         [HttpGet("{id:int}")]
         public IActionResult ObtenerPorId(int id)
         {
-            object respuesta = clienteInputPort.ObtenerPorId(id);
-            return ResolverRespuesta(respuesta);
+            Cliente? cliente = clienteInputPort.ObtenerPorId(id);
+            return cliente == null ? NotFound(new { mensaje = "Cliente no encontrado." }) : Ok(cliente);
         }
 
         [HttpPost]
-        public IActionResult Crear([FromBody] ClienteCrearActualizarDto dto)
+        public IActionResult Crear([FromBody] Cliente cliente)
         {
-            object respuesta = clienteInputPort.Crear(dto);
-            return ResolverRespuesta(respuesta);
+            var resultado = clienteInputPort.Crear(cliente);
+            if (!resultado.Exito)
+                return BadRequest(new { mensaje = resultado.Mensaje });
+
+            return Ok(new { mensaje = resultado.Mensaje });
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult Actualizar(int id, [FromBody] ClienteCrearActualizarDto dto)
+        public IActionResult Actualizar(int id, [FromBody] Cliente cliente)
         {
-            object respuesta = clienteInputPort.Actualizar(id, dto);
-            return ResolverRespuesta(respuesta);
+            var resultado = clienteInputPort.Actualizar(id, cliente);
+            if (!resultado.Exito)
+                return BadRequest(new { mensaje = resultado.Mensaje });
+
+            return Ok(new { mensaje = resultado.Mensaje });
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult Eliminar(int id, [FromQuery] int idUsuario)
         {
-            object respuesta = clienteInputPort.Eliminar(id, idUsuario);
-            return ResolverRespuesta(respuesta);
-        }
+            var resultado = clienteInputPort.Eliminar(id, idUsuario);
+            if (!resultado.Exito)
+                return BadRequest(new { mensaje = resultado.Mensaje });
 
-        private IActionResult ResolverRespuesta(object respuesta)
-        {
-            if (respuesta is RespuestaOperacionDto<object> operacion && !operacion.Exito)
-                return BadRequest(respuesta);
-
-            return Ok(respuesta);
+            return Ok(new { mensaje = resultado.Mensaje });
         }
     }
 }

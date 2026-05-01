@@ -1,7 +1,8 @@
 using MySql.Data.MySqlClient;
 using ServicioVentas.AdaptadoresDeInterfaz.Gateways;
 using ServicioVentas.Entidades;
-using ServicioVentas.FrameworksYDrivers.Data;
+using ServicioVentas.FrameworksYDrivers.Ayudadores;
+using ServicioVentas.FrameworksYDrivers.Persistencia.Conexion;
 
 namespace ServicioVentas.FrameworksYDrivers.Repositorios
 {
@@ -9,9 +10,9 @@ namespace ServicioVentas.FrameworksYDrivers.Repositorios
     {
         private readonly string connectionString;
 
-        public ClienteRepository(ConexionString conexionString)
+        public ClienteRepository()
         {
-            connectionString = conexionString.CadenaConexion;
+            connectionString = ConexionStringSingleton.Instancia.CadenaConexion;
         }
 
         public int Insert(Cliente cliente)
@@ -81,11 +82,11 @@ namespace ServicioVentas.FrameworksYDrivers.Repositorios
             return command.ExecuteNonQuery();
         }
 
-
         public IEnumerable<Cliente> GetAll()
         {
             return GetAll(string.Empty);
         }
+
         public IEnumerable<Cliente> GetAll(string filtro)
         {
             List<Cliente> clientes = new List<Cliente>();
@@ -125,7 +126,6 @@ namespace ServicioVentas.FrameworksYDrivers.Repositorios
             return reader.Read() ? MapearCliente(reader) : null;
         }
 
-
         public int Count()
         {
             string query = "SELECT COUNT(*) FROM cliente WHERE estado = 1";
@@ -136,6 +136,7 @@ namespace ServicioVentas.FrameworksYDrivers.Repositorios
             connection.Open();
             return Convert.ToInt32(command.ExecuteScalar());
         }
+
         private static string ConstruirQuery(string filtro)
         {
             string query = @"SELECT id, fecha_registro, ultima_actualizacion, nit, razon_social, correo_electronico, id_usuario, estado
@@ -160,7 +161,7 @@ namespace ServicioVentas.FrameworksYDrivers.Repositorios
             if (string.IsNullOrWhiteSpace(filtro))
                 return;
 
-            command.Parameters.AddWithValue("@filtro", $"%{QuitarEspacios(filtro)}%");
+            command.Parameters.AddWithValue("@filtro", $"%{StringHelper.QuitarEspacios(filtro)}%");
         }
 
         private static Cliente MapearCliente(MySqlDataReader reader)
@@ -176,27 +177,10 @@ namespace ServicioVentas.FrameworksYDrivers.Repositorios
                     ? null
                     : Convert.ToInt32(reader["id_usuario"]),
                 Estado = Convert.ToInt16(reader["estado"]),
-                Nit = LimpiarEspacios(reader["nit"].ToString()),
-                RazonSocial = LimpiarEspacios(reader["razon_social"].ToString()),
-                CorreoElectronico = LimpiarEspacios(reader["correo_electronico"].ToString())
+                Nit = StringHelper.LimpiarEspacios(reader["nit"].ToString()),
+                RazonSocial = StringHelper.LimpiarEspacios(reader["razon_social"].ToString()),
+                CorreoElectronico = StringHelper.LimpiarEspacios(reader["correo_electronico"].ToString())
             };
-        }
-
-        private static string QuitarEspacios(string? valor)
-        {
-            return string.IsNullOrWhiteSpace(valor)
-                ? string.Empty
-                : valor.Replace(" ", string.Empty).Trim();
-        }
-
-        private static string LimpiarEspacios(string? valor)
-        {
-            if (string.IsNullOrWhiteSpace(valor))
-                return string.Empty;
-
-            return string.Join(" ", valor.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries));
         }
     }
 }
-
-

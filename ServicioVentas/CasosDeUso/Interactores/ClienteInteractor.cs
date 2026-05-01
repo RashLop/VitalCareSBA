@@ -1,7 +1,5 @@
-using ServicioVentas.AdaptadoresDeInterfaz.DTOs;
 using ServicioVentas.AdaptadoresDeInterfaz.Gateways;
 using ServicioVentas.CasosDeUso.PuertosEntrada;
-using ServicioVentas.CasosDeUso.PuertosSalida;
 using ServicioVentas.CasosDeUso.Validadores;
 using ServicioVentas.Entidades;
 
@@ -11,66 +9,60 @@ namespace ServicioVentas.CasosDeUso.Interactores
     {
         private readonly IClienteRepository clienteRepository;
         private readonly IResult<Cliente> clienteValidacion;
-        private readonly IClienteOutputPort clienteOutputPort;
 
         public ClienteInteractor(
             IClienteRepository clienteRepository,
-            IResult<Cliente> clienteValidacion,
-            IClienteOutputPort clienteOutputPort)
+            IResult<Cliente> clienteValidacion)
         {
             this.clienteRepository = clienteRepository;
             this.clienteValidacion = clienteValidacion;
-            this.clienteOutputPort = clienteOutputPort;
         }
 
-        public object ObtenerTodos(string filtro)
+        public IEnumerable<Cliente> ObtenerTodos(string filtro)
         {
-            IEnumerable<Cliente> clientes = clienteRepository.GetAll(filtro);
-            return clienteOutputPort.PresentarExito(
-                "Clientes obtenidos correctamente.",
-                clienteOutputPort.PresentarClientes(clientes));
+            return clienteRepository.GetAll(filtro);
         }
 
-        public object ObtenerPorId(int id)
+        public Cliente? ObtenerPorId(int id)
         {
-            Cliente? cliente = clienteRepository.GetById(id);
-            if (cliente == null)
-                return clienteOutputPort.PresentarError("Cliente no encontrado.");
-
-            return clienteOutputPort.PresentarExito(
-                "Cliente obtenido correctamente.",
-                clienteOutputPort.PresentarCliente(cliente));
+            return clienteRepository.GetById(id);
         }
 
-        public object Crear(ClienteCrearActualizarDto dto)
+        public (bool Exito, string Mensaje) Crear(Cliente cliente)
         {
-            Cliente cliente = ConstruirCliente(0, dto);
+            cliente.IdCliente = 0;
+            cliente.Estado = 1;
+            cliente.CorreoElectronico ??= string.Empty;
+            AplicarConsumidorFinal(cliente);
 
             Result validacion = ValidarCliente(cliente);
             if (!validacion.IsSuccess)
-                return clienteOutputPort.PresentarError(validacion.Error);
+                return (false, validacion.Error);
 
             if (clienteRepository.Insert(cliente) <= 0)
-                return clienteOutputPort.PresentarError("No se pudo registrar el cliente.");
+                return (false, "No se pudo registrar el cliente.");
 
-            return clienteOutputPort.PresentarExito<object>("Cliente registrado correctamente.", null);
+            return (true, "Cliente registrado correctamente.");
         }
 
-        public object Actualizar(int id, ClienteCrearActualizarDto dto)
+        public (bool Exito, string Mensaje) Actualizar(int id, Cliente cliente)
         {
-            Cliente cliente = ConstruirCliente(id, dto);
+            cliente.IdCliente = id;
+            cliente.Estado = 1;
+            cliente.CorreoElectronico ??= string.Empty;
+            AplicarConsumidorFinal(cliente);
 
             Result validacion = ValidarCliente(cliente);
             if (!validacion.IsSuccess)
-                return clienteOutputPort.PresentarError(validacion.Error);
+                return (false, validacion.Error);
 
             if (clienteRepository.Update(cliente) <= 0)
-                return clienteOutputPort.PresentarError("No se pudo actualizar el cliente.");
+                return (false, "No se pudo actualizar el cliente.");
 
-            return clienteOutputPort.PresentarExito<object>("Cliente actualizado correctamente.", null);
+            return (true, "Cliente actualizado correctamente.");
         }
 
-        public object Eliminar(int id, int idUsuario)
+        public (bool Exito, string Mensaje) Eliminar(int id, int idUsuario)
         {
             Cliente cliente = new Cliente
             {
@@ -79,9 +71,9 @@ namespace ServicioVentas.CasosDeUso.Interactores
             };
 
             if (clienteRepository.Delete(cliente) <= 0)
-                return clienteOutputPort.PresentarError("No se pudo eliminar el cliente.");
+                return (false, "No se pudo eliminar el cliente.");
 
-            return clienteOutputPort.PresentarExito<object>("Cliente eliminado correctamente.", null);
+            return (true, "Cliente eliminado correctamente.");
         }
 
         private Result ValidarCliente(Cliente cliente)
@@ -115,29 +107,21 @@ namespace ServicioVentas.CasosDeUso.Interactores
             return Result.Ok();
         }
 
-        private static Cliente ConstruirCliente(int id, ClienteCrearActualizarDto dto)
+        private static void AplicarConsumidorFinal(Cliente cliente)
         {
-            Cliente cliente = new Cliente
-            {
-                IdCliente = id,
-                Nit = dto.Nit,
-                RazonSocial = dto.RazonSocial,
-                CorreoElectronico = dto.CorreoElectronico ?? string.Empty,
-                IdUsuario = dto.IdUsuario
-            };
-
-            AplicarConsumidorFinal(cliente, dto.EsConsumidorFinal);
-            return cliente;
-        }
-
-        private static void AplicarConsumidorFinal(Cliente cliente, bool esConsumidorFinal)
-        {
-            if (!esConsumidorFinal)
+            if (!cliente.EsConsumidorFinal)
                 return;
 
             cliente.Nit = "CF";
             cliente.RazonSocial = "Consumidor Final";
             cliente.CorreoElectronico = string.Empty;
+        }
+
+        private static bool EsConsumidorFinal(Cliente cliente)
+        {
+            return cliente.EsConsumidorFinal ||
+                   (cliente.Nit.Equals("CF", StringComparison.OrdinalIgnoreCase) &&
+                    cliente.RazonSocial.Equals("Consumidor Final", StringComparison.OrdinalIgnoreCase));
         }
 
         private static void LimpiarCampos(Cliente cliente)

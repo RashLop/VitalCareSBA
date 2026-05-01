@@ -1,0 +1,144 @@
+# =========================================================
+# Visual Studio / VS Code / Rider
+# =========================================================
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.slnLaunch.user
+
+# =========================================================
+# Build .NET - todos los proyectos
+# =========================================================
+[Bb]in/
+[Oo]bj/
+**/[Bb]in/
+**/[Oo]bj/
+
+# =========================================================
+# Archivos generados por .NET / NuGet
+# =========================================================
+artifacts/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+*.nupkg
+*.snupkg
+project.lock.json
+project.assets.json
+packages/
+.nuget/
+.nuget/packages/
+
+# =========================================================
+# Logs
+# =========================================================
+*.log
+logs/
+Logs/
+
+# =========================================================
+# Configuración local / secretos
+# =========================================================
+.env
+.env.*
+!.env.example
+secrets.json
+appsettings.Local.json
+appsettings.Production.json
+
+# Se pueden subir si NO contienen contraseñas reales:
+# appsettings.json
+# appsettings.Development.json
+
+# =========================================================
+# Publicación
+# =========================================================
+publish/
+Publish/
+**/publish/
+**/Publish/
+
+# =========================================================
+# FrontendVitalCare - Razor / wwwroot
+# =========================================================
+FrontendVitalCare/bin/
+FrontendVitalCare/obj/
+FrontendVitalCare/wwwroot/uploads/
+FrontendVitalCare/wwwroot/files/
+FrontendVitalCare/wwwroot/temp/
+FrontendVitalCare/appsettings.Local.json
+
+# Si luego usas npm en el frontend
+FrontendVitalCare/node_modules/
+FrontendVitalCare/dist/
+FrontendVitalCare/build/
+FrontendVitalCare/.cache/
+FrontendVitalCare/.parcel-cache/
+FrontendVitalCare/npm-debug.log*
+FrontendVitalCare/yarn-debug.log*
+FrontendVitalCare/yarn-error.log*
+FrontendVitalCare/pnpm-debug.log*
+
+# =========================================================
+# ServicioUsuarios
+# =========================================================
+ServicioUsuarios/bin/
+ServicioUsuarios/obj/
+ServicioUsuarios/appsettings.Local.json
+
+# Archivos HTTP de prueba pueden subirse o ignorarse.
+# Si no quieres subirlos, descomenta:
+# ServicioUsuarios/*.http
+
+# =========================================================
+# ServicioVentas
+# =========================================================
+ServicioVentas/bin/
+ServicioVentas/obj/
+ServicioVentas/appsettings.Local.json
+
+# Archivos HTTP de prueba pueden subirse o ignorarse.
+# Si no quieres subirlos, descomenta:
+# ServicioVentas/*.http
+
+# =========================================================
+# Bases de datos locales / backups
+# =========================================================
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+*.bak
+
+# =========================================================
+# Certificados / llaves
+# =========================================================
+*.pfx
+*.p12
+*.pem
+*.key
+*.crt
+
+# =========================================================
+# Sistema operativo
+# =========================================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================================================
+# Temporales
+# =========================================================
+*.tmp
+*.temp
+*.swp
+*.bak
+*.old

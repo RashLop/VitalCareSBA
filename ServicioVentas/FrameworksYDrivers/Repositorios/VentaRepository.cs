@@ -2,7 +2,7 @@ using MySql.Data.MySqlClient;
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using VitalCareSBA.ServicioVentas.Entidades;
-using ProyectoArqSoft.Infrastructure.Helpers;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Persistencia.Conexion;
 using System.Data;
 

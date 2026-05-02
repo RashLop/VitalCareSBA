@@ -1,7 +1,7 @@
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
 using VitalCareSBA.ServicioVentas.Entidades;
-using ProyectoArqSoft.Infrastructure.Helpers;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using System.Data;
 

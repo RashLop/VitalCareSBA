@@ -1,10 +1,8 @@
-using ProyectoArqSoft.Domain.DTOs;
-using ProyectoArqSoft.Domain.Models;
-using ProyectoArqSoft.Domain.Validators;
+using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using System.Data;
 
-namespace ProyectoArqSoft.Application.Interfaces////
-//namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada //ProyectoArqSoft.Application.Interfaces 
 {
     public interface IVentaInputPort //IVentaService.cs
     {

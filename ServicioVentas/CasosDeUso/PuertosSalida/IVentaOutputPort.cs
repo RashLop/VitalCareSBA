@@ -1,8 +1,8 @@
-using ProyectoArqSoft.Domain.Models;
-using ProyectoArqSoft.Domain.Validators;
+using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using System.Data;
 
-namespace ProyectoArqSoft.Application.Ports.Output ////
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida //ProyectoArqSoft.Application.Ports.Output 
 {
     public interface IVentaOutputPort//IVentaRepository
     {

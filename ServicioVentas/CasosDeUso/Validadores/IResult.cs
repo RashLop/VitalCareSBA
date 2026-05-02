@@ -1,6 +1,4 @@
-using ProyectoArqSoft.Domain.Validators; ///
-
-namespace ProyectoArqSoft.Application.Interfaces
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.Validadores //ProyectoArqSoft.Application.Interfaces
 {
     public interface IResult<T>
     {

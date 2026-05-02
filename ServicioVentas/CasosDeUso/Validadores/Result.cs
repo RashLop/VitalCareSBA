@@ -1,6 +1,6 @@
-namespace ProyectoArqSoft.Domain.Validators /////
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.Validadores //ProyectoArqSoft.Domain.Validators 
 {
-    public class    Result
+    public class Result
     {
         public bool IsSuccess { get; }
         /// <summary>

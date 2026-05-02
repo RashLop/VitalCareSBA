@@ -1,5 +1,4 @@
-namespace ProyectoArqSoft.Domain.DTOs /////
-//namespace VitalCareSBA.ServicioVentas.Entidades
+namespace VitalCareSBA.ServicioVentas.Entidades //ProyectoArqSoft.Domain.DTOs 
 {
     public class DetalleVentaInputDto
     {

@@ -1,5 +1,4 @@
-namespace ProyectoArqSoft.Domain.Models /////
-//namespace VitalCareSBA.ServicioVentas.Entidades
+namespace VitalCareSBA.ServicioVentas.Entidades //ProyectoArqSoft.Domain.Models 
 {
     public class DetalleVenta
     {

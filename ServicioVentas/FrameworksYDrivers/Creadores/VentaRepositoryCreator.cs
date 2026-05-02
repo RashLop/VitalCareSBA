@@ -1,8 +1,7 @@
-using ProyectoArqSoft.Application.Ports.Output;
-using ProyectoArqSoft.Infrastructure.Persistence.Repositories;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
+using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios;
 
-namespace ProyectoArqSoft.Infrastructure.Creadores ///////
-//namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Creadores
+namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Creadores //ProyectoArqSoft.Infrastructure.Creadores 
 {
     public class VentaRepositoryCreator
     {

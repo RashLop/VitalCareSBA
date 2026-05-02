@@ -1,12 +1,12 @@
 using MySql.Data.MySqlClient;
-using ProyectoArqSoft.Application.Ports.Output;
-using ProyectoArqSoft.Domain.Validators;
-using ProyectoArqSoft.Domain.Models;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
+using VitalCareSBA.ServicioVentas.Entidades;
 using ProyectoArqSoft.Infrastructure.Helpers;
-using ProyectoArqSoft.Infrastructure.Persistence.Connection;
+using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Persistencia.Conexion;
 using System.Data;
 
-namespace ProyectoArqSoft.Infrastructure.Persistence.Repositories
+namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //ProyectoArqSoft.Infrastructure.Persistence.Repositories
 {
     public class VentaRepository : IVentaOutputPort//IVentaRepository
     {

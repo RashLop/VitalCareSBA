@@ -1,9 +1,8 @@
-using ProyectoArqSoft.Application.Interfaces;
-using ProyectoArqSoft.Domain.Validators;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using System.Data;
 
-namespace ProyectoArqSoft.Application.Facades ////
-//namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Application.Facades 
 {
     public class FachadaActualizarStock
     {

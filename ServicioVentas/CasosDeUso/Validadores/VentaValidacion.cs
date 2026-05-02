@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
-using ProyectoArqSoft.Domain.Models;
-using ProyectoArqSoft.Application.Interfaces;
+using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 
-namespace ProyectoArqSoft.Domain.Validators ////
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.Validadores //ProyectoArqSoft.Domain.Validators 
 {
     public class VentaValidacion : IResult<Venta>
     {

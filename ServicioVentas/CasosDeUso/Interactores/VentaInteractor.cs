@@ -1,22 +1,20 @@
-using ProyectoArqSoft.Application.Interfaces;
-using ProyectoArqSoft.Application.Ports.Output;
-using ProyectoArqSoft.Domain.DTOs;
-using ProyectoArqSoft.Domain.Models;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
+using VitalCareSBA.ServicioVentas.Entidades;
 using ProyectoArqSoft.Infrastructure.Helpers;
-using ProyectoArqSoft.Domain.Validators;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using System.Data;
 
-namespace ProyectoArqSoft.Application.Services ////
-//namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.Application.Services 
 {
     public class VentaInteractor : IVentaInputPort //VentaService : IVentaService
     {
-        private readonly IVentaRepository _repository;
+        private readonly IVentaOutputPort _repository; //IVentaRepository
         private readonly IResult<Venta> _validador;
         private readonly IMedicamentoRepository _medicamentoRepository;
 
         public VentaInteractor( //VentaService
-            IVentaRepository repository,
+            IVentaOutputPort repository,
             IMedicamentoRepository medicamentoRepository,
             IResult<Venta> validador)
         {

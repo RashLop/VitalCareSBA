@@ -1,8 +1,8 @@
-using ServicioVentas.AdaptadoresDeInterfaz.Gateways;
-using ServicioVentas.Entidades;
-using ServicioVentas.FrameworksYDrivers.Repositorios;
+using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
+using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios;
 
-namespace ServicioVentas.FrameworksYDrivers.Creadores
+namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Creadores
 {
     public class ClienteRepositoryCreator : RepositoryCreator<Cliente>
     {

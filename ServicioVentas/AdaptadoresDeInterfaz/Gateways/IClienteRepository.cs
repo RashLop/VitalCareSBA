@@ -1,6 +1,6 @@
-using ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.Entidades;
 
-namespace ServicioVentas.AdaptadoresDeInterfaz.Gateways
+namespace VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways
 {
     public interface IClienteRepository : IRepository<Cliente>
     {

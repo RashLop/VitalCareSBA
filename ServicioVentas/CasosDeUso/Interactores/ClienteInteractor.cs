@@ -1,7 +1,7 @@
-using ServicioVentas.AdaptadoresDeInterfaz.Gateways;
+using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
 using ServicioVentas.CasosDeUso.PuertosEntrada;
-using ServicioVentas.CasosDeUso.Validadores;
-using ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
+using VitalCareSBA.ServicioVentas.Entidades;
 
 namespace ServicioVentas.CasosDeUso.Interactores
 {

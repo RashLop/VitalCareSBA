@@ -1,20 +1,37 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+/*using ProyectoArqSoft.Application.Interfaces;
+using ProyectoArqSoft.Domain.DTOs;*/
+using System.Data;
 
-namespace FrontendVitalCare.Pages
+namespace ProyectoArqSoft.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        //private readonly IDashboardFacade _dashboardFacade;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public string? Usuario { get; set; }
+        public DataTable MedicamentoDataTable { get; set; } = new DataTable();
+
+       // public EstadisticasDTO TotalFarmacia { get; set; } = new EstadisticasDTO();
+        public IndexModel()
         {
-            _logger = logger;
+
         }
+
+        /*public IndexModel( ) //IDashboardFacade dashboardFacade)
+        
+            //_dashboardFacade = dashboardFacade;
+        }*/
 
         public void OnGet()
         {
+            Usuario = HttpContext.Session.GetString("UserName");
 
+           // DashboardDTO dashboard = _dashboardFacade.ObtenerDashboardCompleto();
+
+         //   TotalFarmacia = dashboard.Estadisticas;
+
+          //  MedicamentoDataTable = dashboard.MedicamentosDestacados;
         }
     }
 }

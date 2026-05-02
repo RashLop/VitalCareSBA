@@ -1,17 +1,17 @@
-namespace ServicioVentas.FrameworksYDrivers.Persistencia.Conexion
+namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Persistencia.Conexion //ProyectoArqSoft.Infrastructure.Persistence.Connection
 {
     public class ConexionStringSingleton
     {
-        private static ConexionStringSingleton? instancia;
-        private static readonly object bloqueo = new object();
+        private static ConexionStringSingleton? instancia; 
         private readonly string cadenaConexion;
-
+        private static readonly object bloqueo=new object();
+        
         public static ConexionStringSingleton Instancia
         {
-            get
-            {
-                if (instancia == null)
+            get {
+                if (instancia==null)
                 {
+
                     lock (bloqueo)
                     {
                         if (instancia == null)
@@ -20,9 +20,9 @@ namespace ServicioVentas.FrameworksYDrivers.Persistencia.Conexion
                         }
                     }
                 }
-
                 return instancia;
-            }
+            
+               }
         }
 
         private ConexionStringSingleton()
@@ -34,12 +34,17 @@ namespace ServicioVentas.FrameworksYDrivers.Persistencia.Conexion
                 .Build();
 
             cadenaConexion = configuracion.GetConnectionString("MySqlConnection")
-                ?? throw new InvalidOperationException("No se encontro la cadena de conexion 'MySqlConnection'.");
+                ?? throw new Exception("No se encontró la cadena de conexión 'MySqlConnection'.");
+                //?? throw new InvalidOperationException("No se encontro la cadena de conexion 'MySqlConnection'."); version rama Marco
         }
+
+        //Metodos
 
         public string CadenaConexion
         {
             get { return cadenaConexion; }
         }
+    
     }
 }
+

@@ -1,24 +1,22 @@
-namespace ServicioVentas.CasosDeUso.Validadores
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.Validadores //ProyectoArqSoft.Domain.Validators 
 {
     public class Result
     {
         public bool IsSuccess { get; }
+       
         public string Error { get; }
 
-        private Result(bool isSuccess, string error = "")
+        public Result(bool isSuccess, string error = "")
         {
             IsSuccess = isSuccess;
             Error = error;
         }
 
         public static Result Ok()
-        {
-            return new Result(true);
-        }
+            => new Result(true);
 
         public static Result Fail(string error)
-        {
-            return new Result(false, error);
-        }
+            => new Result(false, error);
     }
 }
+

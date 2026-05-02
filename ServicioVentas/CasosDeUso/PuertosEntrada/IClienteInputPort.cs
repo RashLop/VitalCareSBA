@@ -1,4 +1,4 @@
-namespace ServicioVentas.CasosDeUso.PuertosEntrada
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada
 {
     public interface IClienteInputPort
     {

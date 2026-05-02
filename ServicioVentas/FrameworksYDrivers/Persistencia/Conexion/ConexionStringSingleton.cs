@@ -35,6 +35,7 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Persistencia.Conexion /
 
             cadenaConexion = configuracion.GetConnectionString("MySqlConnection")
                 ?? throw new Exception("No se encontró la cadena de conexión 'MySqlConnection'.");
+                //?? throw new InvalidOperationException("No se encontro la cadena de conexion 'MySqlConnection'."); version rama Marco
         }
 
         //Metodos

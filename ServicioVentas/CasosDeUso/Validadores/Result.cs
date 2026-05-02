@@ -3,9 +3,7 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Validadores //ProyectoArqSoft.D
     public class Result
     {
         public bool IsSuccess { get; }
-        /// <summary>
-        /// Use IsSuccess == false instead of IsFailure.
-        /// </summary>
+       
         public string Error { get; }
 
         public Result(bool isSuccess, string error = "")

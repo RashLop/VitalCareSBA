@@ -1,4 +1,4 @@
-using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
+/*using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
@@ -169,6 +169,6 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
             return venta;
         }
     }
-}
+}*/
 
 

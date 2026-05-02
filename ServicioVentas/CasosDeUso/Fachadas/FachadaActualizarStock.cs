@@ -1,4 +1,4 @@
-using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
+/*using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using System.Data;
 
@@ -33,4 +33,4 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Appl
             );
         }
     }
-}
+}*/

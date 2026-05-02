@@ -4,6 +4,7 @@ using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Persistencia.Conexion;
+using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Ayudadores;
 using System.Data;
 
 namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //ProyectoArqSoft.Infrastructure.Persistence.Repositories

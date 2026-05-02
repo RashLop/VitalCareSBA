@@ -5,9 +5,9 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Appl
 {
     public class FachadaAnular
     {
-        private readonly IVentaService _ventaService;
+        private readonly IVentaInputPort _ventaService; //IVentaService 
 
-        public FachadaAnular(IVentaService ventaService)
+        public FachadaAnular(IVentaInputPort ventaService) //IVentaService 
         {
             _ventaService = ventaService;
         }

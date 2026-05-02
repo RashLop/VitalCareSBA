@@ -1,9 +1,9 @@
 using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
-using ServicioVentas.CasosDeUso.PuertosEntrada;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using VitalCareSBA.ServicioVentas.Entidades;
 
-namespace ServicioVentas.CasosDeUso.Interactores
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores
 {
     public class ClienteInteractor : IClienteInputPort
     {

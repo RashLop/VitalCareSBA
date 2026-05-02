@@ -24,6 +24,17 @@ builder.Services.AddScoped<IClienteRepository>(provider =>
 builder.Services.AddScoped<IResult<Cliente>, ClienteValidacion>();
 builder.Services.AddScoped<IClienteInputPort, ClienteInteractor>();
 
+
+builder.Services.AddScoped<MedicamentoRepositoryCreator>();
+builder.Services.AddScoped<IMedicamentoRepository>(provider =>
+{
+    var creator = provider.GetRequiredService<MedicamentoRepositoryCreator>();
+    return creator.CreateMedicamentoRepo();
+});
+builder.Services.AddScoped<IResult<Medicamento>, MedicamentoValidacion>();
+builder.Services.AddScoped<IMedicamentoInputPort, MedicamentoService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

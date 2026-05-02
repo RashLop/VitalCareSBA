@@ -1,36 +1,23 @@
-/*using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using System.Data;
+using VitalCareSBA.ServicioVentas.Entidades;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Application.Facades 
 {
     public class FachadaActualizarStock
     {
-        private readonly IMedicamentoService _medicamentoService;
+        private readonly IMedicamentoInputPort _medicamentoService;
 
         public FachadaActualizarStock(
-            IMedicamentoService medicamentoService)
+            IMedicamentoInputPort medicamentoService)
         {
             _medicamentoService = medicamentoService;
         }
 
-        public DataTable ObtenerMedicamentos()
+        public IEnumerable<Medicamento> ObtenerMedicamentos()
         {
             return _medicamentoService.ObtenerTodos();
         }
-
-        public Result ActualizarStock(
-            int idMedicamento,
-            int cantidad,
-            bool esEntrada,
-            int idUsuario)
-        {
-            return _medicamentoService.UpdateStock(
-                idMedicamento,
-                cantidad,
-                esEntrada,
-                idUsuario
-            );
-        }
     }
-}*/
+}

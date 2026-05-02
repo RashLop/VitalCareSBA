@@ -39,12 +39,6 @@
 
                 <div class="collapse navbar-collapse" id="navbarVitalCare">
 
-                    @{
-                        // Obtenemos los datos de sesion
-                        var usuario = Context.Session.GetString("UserName");
-                        var role = Context.Session.GetString("Role")?.Trim();
-                    }
-
                     <ul class="navbar-nav ms-auto">
 
                         <li class="nav-item">
@@ -55,13 +49,6 @@
                             <a class="nav-link" asp-page="/Privacy">Privacidad</a>
                         </li>
 
-                        @if (!string.IsNullOrWhiteSpace(usuario))
-                        {
-                            @* 
-
-                            *@
-                            if (!string.IsNullOrEmpty(role) && role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
-                            {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle fw-bold text-warning"
                                        href="#"
@@ -84,7 +71,6 @@
                                         </li>
                                     </ul>
                                 </li>
-                            }
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle"
@@ -133,19 +119,6 @@
                             </li>
 
                             <li class="nav-item">
-                                @* Mostramos el rol para verificar*@
-                                <span class="nav-link text-light">Hola, <b>@usuario (@role)</b></span>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-warning fw-bold" asp-page="/Auth/Logout">
-                                    Cerrar Sesión
-                                </a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
                                 <a class="nav-link" asp-page="/Auth/Login">
                                     Login
                                 </a>
@@ -156,12 +129,8 @@
                                     Registro    
                                 </a>
                             </li>
-                        }
-
                     </ul>
-
                 </div>
-
             </div>
         </nav>
     </header>

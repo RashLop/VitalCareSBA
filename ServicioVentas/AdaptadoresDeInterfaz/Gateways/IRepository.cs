@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace ServicioVentas.AdaptadoresDeInterfaz.Gateways
+namespace VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways
 {
     public interface IRepository<T>
     {

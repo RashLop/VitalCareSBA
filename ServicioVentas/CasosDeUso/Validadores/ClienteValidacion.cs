@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.Entidades;
 
-namespace ServicioVentas.CasosDeUso.Validadores
+namespace VitalCareSBA.ServicioVentas.CasosDeUso.Validadores
 {
     public class ClienteValidacion : IResult<Cliente>
     {

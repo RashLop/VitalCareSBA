@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using ServicioVentas.CasosDeUso.PuertosEntrada;
-using ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
+using VitalCareSBA.ServicioVentas.Entidades;
 
-namespace ServicioVentas.AdaptadoresDeInterfaz.Controladores
+namespace VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Controladores
 {
     [ApiController]
     [Route("api/clientes")]

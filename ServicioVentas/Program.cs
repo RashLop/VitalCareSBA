@@ -1,9 +1,9 @@
-using ServicioVentas.AdaptadoresDeInterfaz.Gateways;
-using ServicioVentas.CasosDeUso.Interactores;
-using ServicioVentas.CasosDeUso.PuertosEntrada;
-using ServicioVentas.CasosDeUso.Validadores;
-using ServicioVentas.Entidades;
-using ServicioVentas.FrameworksYDrivers.Creadores;
+using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Interactores;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
+using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Creadores;
 
 var builder = WebApplication.CreateBuilder(args);
 

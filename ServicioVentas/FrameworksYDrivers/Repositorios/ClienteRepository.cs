@@ -1,10 +1,10 @@
 using MySql.Data.MySqlClient;
-using ServicioVentas.AdaptadoresDeInterfaz.Gateways;
-using ServicioVentas.Entidades;
-using ServicioVentas.FrameworksYDrivers.Ayudadores;
-using ServicioVentas.FrameworksYDrivers.Persistencia.Conexion;
+using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
+using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
+using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Persistencia.Conexion;
 
-namespace ServicioVentas.FrameworksYDrivers.Repositorios
+namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios
 {
     public class ClienteRepository : IClienteRepository
     {

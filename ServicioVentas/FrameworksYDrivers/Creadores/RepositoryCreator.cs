@@ -1,6 +1,6 @@
-using ServicioVentas.AdaptadoresDeInterfaz.Gateways;
+using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
 
-namespace ServicioVentas.FrameworksYDrivers.Creadores
+namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Creadores
 {
     public abstract class RepositoryCreator<T>
     {

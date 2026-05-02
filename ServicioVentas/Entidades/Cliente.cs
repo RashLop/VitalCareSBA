@@ -1,4 +1,4 @@
-namespace ServicioVentas.Entidades
+namespace VitalCareSBA.ServicioVentas.Entidades
 {
     public class Cliente
     {

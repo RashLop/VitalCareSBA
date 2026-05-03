@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using ServicioUsuarios.App.Interfaces;
 using ServicioUsuarios.App.Servicios;
 using ServicioUsuarios.Dominio.Puertos.PuertoSalida;
+using ServicioUsuarios.Dominio.Validadores;
 using ServicioUsuarios.Infraestructura.Creadores;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -82,8 +83,11 @@ builder.Services.AddScoped<IUsuarioTokenRepository>(provider =>
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IUsuarioTokenService, UsuarioTokenService>();
+builder.Services.AddScoped<UsuarioValidacionGeneral>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

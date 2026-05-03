@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ServicioUsuarios.App.DTOs;
 using ServicioUsuarios.App.Interfaces;
 using ServicioUsuarios.Dominio.Validadores;
+using ServicioUsuarios.Infraestructura.Ayudadores;
 
 namespace ServicioUsuarios.Dominio.Puertos.PuertosEntrada.Controladores
 {
@@ -12,11 +13,16 @@ namespace ServicioUsuarios.Dominio.Puertos.PuertosEntrada.Controladores
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IUsuarioService _usuarioService;
         private readonly IUsuarioTokenService _usuarioTokenService;
 
-        public AuthController(IAuthService authService, IUsuarioTokenService usuarioTokenService)
+        public AuthController(
+            IAuthService authService,
+            IUsuarioService usuarioService,
+            IUsuarioTokenService usuarioTokenService)
         {
             _authService = authService;
+            _usuarioService = usuarioService;
             _usuarioTokenService = usuarioTokenService;
         }
 
@@ -29,6 +35,68 @@ namespace ServicioUsuarios.Dominio.Puertos.PuertosEntrada.Controladores
                 return Unauthorized(new { mensaje = resultado.Error });
 
             return Ok(new { token = respuesta.Token });
+        }
+
+        [HttpPost("registrar")]
+        public IActionResult Registrar([FromBody] UsuarioRegistroDto dto)
+        {
+            string role = "Bioquimico";
+
+            dto.UserName = CredencialesHelper.GenerarUserName(
+                dto.Nombres,
+                dto.ApellidoPaterno,
+                dto.Ci
+            );
+
+            dto.Password = CredencialesHelper.GenerarPasswordTemporal();
+
+            Result resultado = _usuarioService.CrearUsuario(dto, role, null);
+
+            if (!resultado.IsSuccess)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(new
+            {
+                mensaje = "Usuario registrado correctamente. Revisa tu correo electronico para activar la cuenta."
+            });
+        }
+
+        [HttpGet("validar-activacion")]
+        public IActionResult ValidarActivacion([FromQuery] string token)
+        {
+            Result resultado = _usuarioService.ValidarActivacionCuenta(token);
+
+            if (!resultado.IsSuccess)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(new { mensaje = "Token valido. Ahora debes definir tu nueva contrasena." });
+        }
+
+        [HttpPost("activar-cuenta")]
+        public IActionResult ActivarCuenta(
+            [FromForm] string token,
+            [FromForm] string nuevaPassword,
+            [FromForm] string confirmarPassword)
+        {
+            token = token?.Trim() ?? string.Empty;
+            nuevaPassword = nuevaPassword?.Trim() ?? string.Empty;
+            confirmarPassword = confirmarPassword?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(token))
+                return BadRequest(new { mensaje = "Token invalido." });
+
+            if (string.IsNullOrWhiteSpace(nuevaPassword))
+                return BadRequest(new { mensaje = "La nueva contrasena es obligatoria." });
+
+            if (nuevaPassword != confirmarPassword)
+                return BadRequest(new { mensaje = "La contrasena y su confirmacion no coinciden." });
+
+            Result resultado = _usuarioService.ActivarCuenta(token, nuevaPassword);
+
+            if (!resultado.IsSuccess)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(new { mensaje = "Cuenta activada correctamente. Ya puedes iniciar sesion." });
         }
 
         [Authorize]

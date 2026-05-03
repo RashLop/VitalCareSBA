@@ -4,6 +4,9 @@ using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Creadores;
+using VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
+using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +37,15 @@ builder.Services.AddScoped<IMedicamentoRepository>(provider =>
 builder.Services.AddScoped<IResult<Medicamento>, MedicamentoValidacion>();
 builder.Services.AddScoped<IMedicamentoInputPort, MedicamentoService>();
 
+builder.Services.AddScoped<IVentaFacade, VentaFacade>();
+builder.Services.AddScoped<FachadaVenta>();
+builder.Services.AddScoped<FachadaAnular>();
+builder.Services.AddScoped<FachadaActualizarStock>();
+
+builder.Services.AddScoped<IVentaInputPort, VentaInteractor>();
+builder.Services.AddScoped<IVentaOutputPort, VentaRepository>();
+
+builder.Services.AddScoped<IResult<Venta>, VentaValidacion>();
 
 var app = builder.Build();
 

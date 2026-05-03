@@ -1,4 +1,4 @@
-/*using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using System.Data;
@@ -10,18 +10,18 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Appl
         private readonly FachadaVenta _fv;
         private readonly FachadaAnular _fa;
         private readonly FachadaActualizarStock _fasm;
-        private readonly IClienteService _clienteService;
+        private readonly IClienteInputPort _clienteInputPort; //IClienteService _clienteService;
 
         public VentaFacade(
             FachadaVenta fv,
             FachadaAnular fa,
             FachadaActualizarStock fasm,
-            IClienteService clienteService)
+            IClienteInputPort clienteService)
         {
             _fv = fv;
             _fa = fa;
             _fasm = fasm;
-            _clienteService = clienteService;
+            _clienteInputPort = clienteService;
         }
 
         public DataTable ObtenerVentas(string filtro)
@@ -64,10 +64,10 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Appl
                 idVenta,
                 idUsuarioEditor);
 
-        public DataTable ObtenerClientes()
-            => _clienteService.ObtenerTodos();
+        public IEnumerable<Cliente> ObtenerClientes(string filtro = "")
+            => _clienteInputPort.ObtenerTodos(filtro);
 
-        public DataTable ObtenerMedicamentos()
+        public IEnumerable<Medicamento> ObtenerMedicamentos()
             => _fasm.ObtenerMedicamentos();
     }
-}*/
+}

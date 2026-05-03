@@ -25,7 +25,7 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada //ProyectoArqSof
 
         Result AnularVenta(int idVenta, int idUsuarioEditor);
 
-        DataTable ObtenerClientes();
-        DataTable ObtenerMedicamentos();
+        IEnumerable<Cliente> ObtenerClientes(string filtro = "");
+        IEnumerable<Medicamento> ObtenerMedicamentos();
     }
 }

@@ -1,6 +1,31 @@
 @ServicioVentas_HostAddress = http://localhost:5080
 
-GET {{ServicioVentas_HostAddress}}/weatherforecast/
+GET {{ServicioVentas_HostAddress}}/api/ventas
 Accept: application/json
 
 ###
+
+GET {{ServicioVentas_HostAddress}}/api/ventas/1
+Accept: application/json
+
+###
+
+POST {{ServicioVentas_HostAddress}}/api/ventas
+Content-Type: application/json
+
+{
+  "idCliente": 1,
+  "idUsuario": 1,
+  "metodoPago": "Efectivo",
+  "detalles": [
+    {
+      "idMedicamento": 1,
+      "cantidad": 2
+    }
+  ]
+}
+
+###
+
+DELETE {{ServicioVentas_HostAddress}}/api/ventas/1?idUsuarioEditor=1
+Accept: application/json

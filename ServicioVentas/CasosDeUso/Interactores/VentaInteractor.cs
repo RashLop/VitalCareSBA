@@ -1,9 +1,9 @@
-/*using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
+using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
-using System.Data;
+using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.Application.Services 
 {
@@ -24,12 +24,12 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
         }
 
 
-        public DataTable ObtenerTodos()
+        public IEnumerable<Venta> ObtenerTodos()
         {
             return _repository.GetAll();
         }
 
-        public DataTable ObtenerTodos(string filtro)
+        public IEnumerable<Venta> ObtenerTodos(string filtro)
         {
             return _repository.GetAll(filtro);
         }
@@ -169,6 +169,6 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
             return venta;
         }
     }
-}*/
+}
 
 

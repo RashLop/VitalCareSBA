@@ -1,13 +1,12 @@
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
-using System.Data;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada //ProyectoArqSoft.Application.Interfaces 
 {
     public interface IVentaInputPort //IVentaService.cs
     {
-        DataTable ObtenerTodos();
-        DataTable ObtenerTodos(string filtro);
+        IEnumerable<Venta> ObtenerTodos();
+        IEnumerable<Venta> ObtenerTodos(string filtro);
 
         Venta? ObtenerPorId(int id);
         List<DetalleVenta> ObtenerDetallesPorVenta(int idVenta);

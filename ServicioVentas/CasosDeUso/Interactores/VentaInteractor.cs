@@ -4,7 +4,6 @@ using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
-using System.Data;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.Application.Services 
 {
@@ -25,12 +24,12 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
         }
 
 
-        public DataTable ObtenerTodos()
+        public IEnumerable<Venta> ObtenerTodos()
         {
             return _repository.GetAll();
         }
 
-        public DataTable ObtenerTodos(string filtro)
+        public IEnumerable<Venta> ObtenerTodos(string filtro)
         {
             return _repository.GetAll(filtro);
         }

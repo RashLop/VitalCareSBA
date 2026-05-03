@@ -1,7 +1,6 @@
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
-using System.Data;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Application.Facades 
 {
@@ -24,7 +23,7 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Appl
             _clienteInputPort = clienteService;
         }
 
-        public DataTable ObtenerVentas(string filtro)
+        public IEnumerable<Venta> ObtenerVentas(string filtro)
             => _fv.ObtenerVentas(filtro);
 
         public Venta? ObtenerVentaPorId(int id)

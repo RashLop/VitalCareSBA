@@ -5,7 +5,6 @@ using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Persistencia.Conexion;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Ayudadores;
-using System.Data;
 
 namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //ProyectoArqSoft.Infrastructure.Persistence.Repositories
 {
@@ -18,30 +17,35 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
             connectionString = ConexionStringSingleton.Instancia.CadenaConexion;
         }
 
-        public DataTable GetAll()
+        public IEnumerable<Venta> GetAll()
         {
             return GetAll(string.Empty);
         }
 
-        public DataTable GetAll(string filtro)
+        public IEnumerable<Venta> GetAll(string filtro)
         {
-            DataTable tabla = new DataTable();
+            List<Venta> ventas = new();
 
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-
+                ////CONCAT(v.nit, ' - ', v.razon_social) AS cliente,
                 string query = @"SELECT v.id,
                                         v.fecha_hora,
                                         v.total,
-                                        v.metodo_pago,
-                                        CONCAT(v.nit, ' - ', v.razon_social) AS cliente,
-                                        v.razon_social,
+                                        v.metodo_pago, 
+                                        v.Cliente_idCliente,
+                                        v.usuario_idUsuario,
+                                        v.estado,
+                                        v.fecha_registro,
+                                        v.ultima_actualizacion,
+                                        v.Id_usuario_editor,
                                         v.nit,
+                                        v.razon_social,
                                         u.user_name AS usuario
-                                 FROM venta v
-                                 INNER JOIN usuario u ON v.usuario_idUsuario = u.id
-                                 WHERE v.estado = 1";
+                                FROM venta v
+                                INNER JOIN usuario u ON v.usuario_idUsuario = u.id
+                                WHERE v.estado = 1";
 
                 query += FiltroSqlHelper.ConstruirCondicionLike(
                     filtro,
@@ -56,11 +60,37 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
                 MySqlCommand command = new MySqlCommand(query, connection);
                 FiltroSqlHelper.AgregarParametrosLike(command, filtro);
 
-                MySqlDataAdapter adapter = new MySqlDataAdapter(command);
-                adapter.Fill(tabla);
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ventas.Add(new Venta
+                        {
+                            Id = Convert.ToInt32(reader["id"]),
+                            FechaHora = Convert.ToDateTime(reader["fecha_hora"]),
+                            Total = Convert.ToDecimal(reader["total"]),
+                            MetodoPago = StringHelper.LimpiarEspacios(reader["metodo_pago"]?.ToString()),
+                            IdCliente = Convert.ToInt32(reader["Cliente_idCliente"]),
+                            IdUsuario = Convert.ToInt32(reader["usuario_idUsuario"]),
+                            Estado = Convert.ToInt16(reader["estado"]),
+                            FechaRegistro = Convert.ToDateTime(reader["fecha_registro"]),
+
+                            UltimaActualizacion = reader["ultima_actualizacion"] == DBNull.Value
+                                ? null
+                                : Convert.ToDateTime(reader["ultima_actualizacion"]),
+
+                            IdUsuarioEditor = reader["Id_usuario_editor"] == DBNull.Value
+                                ? null
+                                : Convert.ToInt32(reader["Id_usuario_editor"]),
+
+                            Nit = StringHelper.LimpiarEspacios(reader["nit"]?.ToString()),
+                            RazonSocial = StringHelper.LimpiarEspacios(reader["razon_social"]?.ToString())
+                        });
+                    }
+                }
             }
 
-            return tabla;
+            return ventas;
         }
 
         public Venta? GetById(int id)

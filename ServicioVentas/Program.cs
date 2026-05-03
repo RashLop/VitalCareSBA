@@ -46,6 +46,18 @@ builder.Services.AddScoped<IVentaInputPort, VentaInteractor>();
 builder.Services.AddScoped<IVentaOutputPort, VentaRepository>();
 
 builder.Services.AddScoped<IResult<Venta>, VentaValidacion>();
+// CLASIFICACION
+
+builder.Services.AddScoped<IResult<Clasificacion>, ClasificacionValidacion>();
+builder.Services.AddScoped<IClasificacionInputPort, ClasificacionInteractor>();
+
+builder.Services.AddScoped<ClasificacionRepositoryCreator>();
+builder.Services.AddScoped<IClasificacionRepository>(provider =>
+{
+    var creator = provider.GetRequiredService<ClasificacionRepositoryCreator>();
+    return creator.CreateClasificacionRepo();
+});
+
 
 var app = builder.Build();
 

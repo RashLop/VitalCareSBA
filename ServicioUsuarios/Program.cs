@@ -1,87 +1,119 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.OpenApi.Models;
+using ServicioUsuarios.App.Interfaces;
 using ServicioUsuarios.App.Servicios;
 using ServicioUsuarios.Dominio.Puertos.PuertoSalida;
-using ServicioUsuarios.Dominio.Validadores;
-using ServicioUsuarios.Infraestructura.Ayudadores;
 using ServicioUsuarios.Infraestructura.Creadores;
-using ServicioUsuarios.Infraestructura.Persistencia.Repositorios;
-using ServicioUsuarios.Infraestructura.Persistencia.Conexion;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔥 Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// 🔥 Controllers
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "ServicioUsuarios API",
+        Version = "v1"
+    });
 
-// 🔥 CORS
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Ingrese el token JWT como: Bearer {token}"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
-// 🔥 CONEXIÓN
-builder.Services.AddSingleton<ConexionStringSingleton>();
+string jwtKey = builder.Configuration["Jwt:Key"]
+    ?? throw new InvalidOperationException("No se encontro Jwt:Key en la configuracion.");
+string jwtIssuer = builder.Configuration["Jwt:Issuer"]
+    ?? throw new InvalidOperationException("No se encontro Jwt:Issuer en la configuracion.");
+string jwtAudience = builder.Configuration["Jwt:Audience"]
+    ?? throw new InvalidOperationException("No se encontro Jwt:Audience en la configuracion.");
 
-// 🔥 DI PRINCIPAL (MEJORADO)
-builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
-builder.Services.AddScoped<UsuarioRepositorioCreator>();
-builder.Services.AddScoped<AuthService>();
+Environment.SetEnvironmentVariable("JWT_KEY", jwtKey);
+Environment.SetEnvironmentVariable("JWT_ISSUER", jwtIssuer);
+Environment.SetEnvironmentVariable("JWT_AUDIENCE", jwtAudience);
+
+builder.Services.AddScoped<UsuarioRepositoryCreator>();
+builder.Services.AddScoped<UsuarioTokenRepositoryCreator>();
+
+builder.Services.AddScoped<IUsuarioRepository>(provider =>
+{
+    UsuarioRepositoryCreator creator = provider.GetRequiredService<UsuarioRepositoryCreator>();
+    return creator.CreateRepo();
+});
+
+builder.Services.AddScoped<IUsuarioTokenRepository>(provider =>
+{
+    UsuarioTokenRepositoryCreator creator = provider.GetRequiredService<UsuarioTokenRepositoryCreator>();
+    return creator.CreateRepo();
+});
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<LoginValidador>();
-
-// 🔥 TOKEN (MIGRACIÓN FARMACIA)
-builder.Services.AddScoped<IUsuarioTokenRepositorio, UsuarioTokenRepositorio>();
-builder.Services.AddScoped<UsuarioTokenService>();
-
-// 🔥 JWT
-var jwt = builder.Configuration.GetSection("Jwt");
+builder.Services.AddScoped<IUsuarioTokenService, UsuarioTokenService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwt["Issuer"],
-        ValidAudience = jwt["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwt["Key"]!)
-        )
-    };
-});
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// 🔥 Swagger SOLO EN DEV
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// 🔥 Middleware
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

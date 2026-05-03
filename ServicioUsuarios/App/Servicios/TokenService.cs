@@ -1,3 +1,7 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using ServicioUsuarios.App.DTOs;
 using ServicioUsuarios.App.Interfaces;
 using ServicioUsuarios.Dominio.Modelos;
@@ -7,40 +11,78 @@ using ServicioUsuarios.Infraestructura.Ayudadores;
 
 namespace ServicioUsuarios.App.Servicios
 {
-    public class UsuarioTokenService : IUsuarioTokenService
+    public class TokenService : ITokenService
     {
         private readonly IUsuarioTokenRepository _usuarioTokenRepository;
 
-        public UsuarioTokenService(IUsuarioTokenRepository usuarioTokenRepository)
+        public TokenService(IUsuarioTokenRepository usuarioTokenRepository)
         {
             _usuarioTokenRepository = usuarioTokenRepository;
         }
 
-        public Result GenerarToken(UsuarioTokenGeneracionDto dto, out string tokenPlano)
+        public (Result, string) GenerarToken(UsuarioTokenGeneracionDto dto, out string tokenPlano)
         {
             tokenPlano = string.Empty;
 
             Result validacion = ValidarGeneracionToken(dto);
             if (!validacion.IsSuccess)
-                return validacion;
+                return (validacion, string.Empty);
 
             _usuarioTokenRepository.EliminarTokensObsoletos(7);
             _usuarioTokenRepository.RevocarTokensActivos(dto.IdUsuario, dto.TipoToken);
 
-            tokenPlano = TokenHelper.GenerarTokenPlano();
-            string tokenHash = TokenHelper.GenerarTokenHash(tokenPlano);
             DateTime fechaExpiracion = TokenHelper.GenerarFechaExpiracion(dto.MinutosExpiracion);
 
-            UsuarioToken token = new UsuarioToken(dto.IdUsuario, tokenHash, dto.TipoToken, fechaExpiracion);
-            int filasAfectadas = _usuarioTokenRepository.Insert(token);
-
-            if (filasAfectadas <= 0)
+            if (dto.TipoToken == TipoTokenConstantes.ActivacionCuenta
+                || dto.TipoToken == TipoTokenConstantes.ResetPassword
+                || dto.TipoToken == TipoTokenConstantes.ConfirmacionEmail)
             {
-                tokenPlano = string.Empty;
-                return Result.Fail("No se pudo generar el token.");
+                tokenPlano = TokenHelper.GenerarTokenPlano();
+                string tokenHashPlano = TokenHelper.GenerarTokenHash(tokenPlano);
+
+                UsuarioToken tokenPlanoEntity = new UsuarioToken(dto.IdUsuario, tokenHashPlano, dto.TipoToken, fechaExpiracion);
+                int insertPlano = _usuarioTokenRepository.Insert(tokenPlanoEntity);
+
+                return insertPlano > 0
+                    ? (Result.Ok(), tokenPlano)
+                    : (Result.Fail("No se pudo registrar el token."), string.Empty);
             }
 
-            return Result.Ok();
+            string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? string.Empty;
+            string jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? string.Empty;
+            string jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(jwtKey) || string.IsNullOrWhiteSpace(jwtIssuer) || string.IsNullOrWhiteSpace(jwtAudience))
+                return (Result.Fail("No se encontro la configuracion JWT requerida."), string.Empty);
+
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, dto.IdUsuario.ToString()),
+                new Claim(ClaimTypes.Name, dto.UserName ?? string.Empty),
+                new Claim(ClaimTypes.Role, dto.Role ?? string.Empty)
+            };
+
+            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            JwtSecurityToken tokenJwt = new JwtSecurityToken(
+                issuer: jwtIssuer,
+                audience: jwtAudience,
+                claims: claims,
+                expires: fechaExpiracion,
+                signingCredentials: creds
+            );
+
+            string jwtGenerado = new JwtSecurityTokenHandler().WriteToken(tokenJwt);
+            tokenPlano = jwtGenerado;
+            string tokenHash = TokenHelper.GenerarTokenHash(jwtGenerado);
+
+            UsuarioToken token = new UsuarioToken(dto.IdUsuario, tokenHash, dto.TipoToken, fechaExpiracion);
+            int insert = _usuarioTokenRepository.Insert(token);
+
+            return insert > 0
+                ? (Result.Ok(), jwtGenerado)
+                : (Result.Fail("No se pudo registrar el token."), string.Empty);
         }
 
         public UsuarioToken? ValidarToken(string tokenPlano, string tipoToken)

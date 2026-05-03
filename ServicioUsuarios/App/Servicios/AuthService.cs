@@ -1,54 +1,84 @@
+using ServicioUsuarios.App.DTOs;
+using ServicioUsuarios.App.Interfaces;
+using ServicioUsuarios.Dominio.Modelos;
 using ServicioUsuarios.Dominio.Puertos.PuertoSalida;
-using ServicioUsuarios.Infraestructura.Ayudadores;
-using ServicioUsuarios.Infraestructura.Creadores;
 using ServicioUsuarios.Dominio.Validadores;
+using ServicioUsuarios.Infraestructura.Ayudadores;
 
 namespace ServicioUsuarios.App.Servicios
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
-        private readonly IUsuarioRepositorio repo;
-        private readonly ITokenService tokenService;
-        private readonly LoginValidador validator;
-        private readonly UsuarioTokenService usuarioTokenService;
+        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly ITokenService _tokenService;
 
-        public AuthService(
-            UsuarioRepositorioCreator creator,
-            ITokenService tokenService,
-            LoginValidador validator,
-            UsuarioTokenService usuarioTokenService)
+        public AuthService(IUsuarioRepository usuarioRepository, ITokenService tokenService)
         {
-            this.repo = creator.Crear();
-            this.tokenService = tokenService;
-            this.validator = validator;
-            this.usuarioTokenService = usuarioTokenService;
+            _usuarioRepository = usuarioRepository;
+            _tokenService = tokenService;
         }
 
-        public string Login(string email, string password)
+        public Result IniciarSesion(UsuarioLoginRequestDto dto, out UsuarioLoginResponseDto? respuesta)
         {
-            // 🔥 VALIDACIÓN (igual farmacia)
-            validator.Validar(email, password);
+            respuesta = null;
 
-            var usuario = repo.ObtenerPorEmail(email.Trim());
+            Result validacion = ValidarLoginDto(dto);
+            if (!validacion.IsSuccess)
+                return validacion;
+
+            string emailOUserName = dto.EmailOUserName.Trim();
+            Usuario? usuario = _usuarioRepository.GetByEmail(emailOUserName);
 
             if (usuario == null)
-                throw new Exception("Usuario no existe");
+                usuario = _usuarioRepository.GetByUserName(emailOUserName);
+
+            if (usuario == null)
+                return Result.Fail("Usuario no existe.");
 
             if (usuario.Activo != 1)
-                throw new Exception("Usuario inactivo");
+                return Result.Fail("Usuario inactivo.");
 
-            if (!PasswordHelper.Verify(password.Trim(), usuario.PasswordHash))
-                throw new Exception("Credenciales inválidas");
+            if (!PasswordHelper.Verify(dto.Password, usuario.PasswordHash))
+                return Result.Fail("Credenciales invalidas.");
 
-            // 🔥 GENERAR TOKEN
-            var jwt = tokenService.GenerarToken(usuario);
+            UsuarioTokenGeneracionDto tokenGeneracionDto = new UsuarioTokenGeneracionDto
+            {
+                IdUsuario = usuario.IdUsuario,
+                TipoToken = "INICIO_SESION",
+                MinutosExpiracion = 60,
+                UserName = usuario.UserName,
+                Role = usuario.Role
+            };
 
-            // 🔥 GUARDAR TOKEN (100% estilo farmacia)
-            usuarioTokenService.GuardarToken(usuario.IdUsuario, jwt, 60);
-            // ⚠️ Si tu modelo es UsuarioIdUsuario, usa:
-            // usuarioTokenService.GuardarToken(usuario.IdUsuarioUsuario, jwt, 60);
+            (Result resultadoToken, string tokenGenerado) = _tokenService.GenerarToken(tokenGeneracionDto, out string _);
+            if (!resultadoToken.IsSuccess)
+                return resultadoToken;
 
-            return jwt;
+            respuesta = new UsuarioLoginResponseDto
+            {
+                IdUsuario = usuario.IdUsuario,
+                UserName = usuario.UserName,
+                Role = usuario.Role,
+                MustChangePassword = usuario.MustChangePassword == 1,
+                Token = tokenGenerado,
+                ExpiraEn = tokenGeneracionDto.MinutosExpiracion
+            };
+
+            return Result.Ok();
+        }
+
+        private Result ValidarLoginDto(UsuarioLoginRequestDto dto)
+        {
+            if (dto == null)
+                return Result.Fail("Los datos de inicio de sesion son requeridos.");
+
+            if (string.IsNullOrWhiteSpace(dto.EmailOUserName))
+                return Result.Fail("El email o nombre de usuario es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(dto.Password))
+                return Result.Fail("La contrasena es obligatoria.");
+
+            return Result.Ok();
         }
     }
 }

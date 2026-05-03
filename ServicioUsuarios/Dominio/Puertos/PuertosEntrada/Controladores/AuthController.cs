@@ -1,6 +1,9 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServicioUsuarios.App.Servicios;
 using ServicioUsuarios.App.DTOs;
+using ServicioUsuarios.App.Interfaces;
+using ServicioUsuarios.Dominio.Validadores;
 
 namespace ServicioUsuarios.Dominio.Puertos.PuertosEntrada.Controladores
 {
@@ -8,25 +11,39 @@ namespace ServicioUsuarios.Dominio.Puertos.PuertosEntrada.Controladores
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService service;
+        private readonly IAuthService _authService;
+        private readonly IUsuarioTokenService _usuarioTokenService;
 
-        public AuthController(AuthService service)
+        public AuthController(IAuthService authService, IUsuarioTokenService usuarioTokenService)
         {
-            this.service = service;
+            _authService = authService;
+            _usuarioTokenService = usuarioTokenService;
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public IActionResult Login([FromBody] UsuarioLoginRequestDto dto)
         {
-            try
-            {
-                var token = service.Login(request.Email, request.Password);
-                return Ok(new { token });
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(new { mensaje = ex.Message });
-            }
+            Result resultado = _authService.IniciarSesion(dto, out UsuarioLoginResponseDto? respuesta);
+
+            if (!resultado.IsSuccess || respuesta == null)
+                return Unauthorized(new { mensaje = resultado.Error });
+
+            return Ok(new { token = respuesta.Token });
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            string? idUsuarioValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(idUsuarioValue, out int idUsuario))
+                return Unauthorized(new { mensaje = "Token invalido." });
+
+            Result resultado = _usuarioTokenService.RevocarTokensActivos(idUsuario, "INICIO_SESION");
+            if (!resultado.IsSuccess)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(new { mensaje = "Sesion cerrada correctamente." });
         }
     }
 }

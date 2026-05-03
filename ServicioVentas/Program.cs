@@ -4,6 +4,7 @@ using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Creadores;
+using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,18 @@ builder.Services.AddScoped<IMedicamentoRepository>(provider =>
 });
 builder.Services.AddScoped<IResult<Medicamento>, MedicamentoValidacion>();
 builder.Services.AddScoped<IMedicamentoInputPort, MedicamentoService>();
+
+// CLASIFICACION
+
+builder.Services.AddScoped<IResult<Clasificacion>, ClasificacionValidacion>();
+builder.Services.AddScoped<IClasificacionInputPort, ClasificacionInteractor>();
+
+builder.Services.AddScoped<ClasificacionRepositoryCreator>();
+builder.Services.AddScoped<IClasificacionRepository>(provider =>
+{
+    var creator = provider.GetRequiredService<ClasificacionRepositoryCreator>();
+    return creator.CreateClasificacionRepo();
+});
 
 
 var app = builder.Build();

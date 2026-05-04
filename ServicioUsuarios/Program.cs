@@ -6,6 +6,8 @@ using ServicioUsuarios.App.Interfaces;
 using ServicioUsuarios.App.Servicios;
 using ServicioUsuarios.Dominio.Puertos.PuertoSalida;
 using ServicioUsuarios.Infraestructura.Creadores;
+using ServicioUsuarios.Dominio.Validadores; // ? Agregar para los validadores
+using ServicioUsuarios.App.DTOs; // ? Agregar para los DTOs
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +86,17 @@ builder.Services.AddScoped<IUsuarioTokenRepository>(provider =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUsuarioTokenService, UsuarioTokenService>();
+
+// ? REGISTRAR IUsuarioService
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
+// ? REGISTRAR VALIDADORES (necesarios para UsuarioService)
+builder.Services.AddScoped<IResult<UsuarioRegistroDto>, UsuarioRegistroValidacion>();
+builder.Services.AddScoped<IResult<UsuarioActualizacionDto>, UsuarioActualizacionValidacion>();
+builder.Services.AddScoped<UsuarioNegocioValidacion>();
+
+// ? REGISTRAR EMAIL SERVICE (si no está registrado)
+builder.Services.AddScoped<IEmailService, EmailService>(); // Ajusta según tu implementación real
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

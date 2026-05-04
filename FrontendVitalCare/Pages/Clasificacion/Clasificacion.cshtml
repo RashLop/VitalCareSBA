@@ -1,0 +1,167 @@
+@page
+@model FrontendVitalCare.Pages.ClasificacionModel
+@{
+}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-success">Clasificaciones</h2>
+
+        <a href="/Clasificacion/ClasificacionCreate" class="btn btn-primary">
+            + Nueva Clasificación
+        </a>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="card-module p-3 mb-4">
+        <div class="input-group">
+            <input type="text"
+                   id="filtro"
+                   class="form-control"
+                   placeholder="Buscar..." />
+
+            <button class="btn btn-success" onclick="cargarClasificaciones()">
+                Buscar
+            </button>
+
+            <button class="btn btn-secondary" onclick="limpiar()">
+                Limpiar
+            </button>
+        </div>
+    </div>
+
+    <!-- MENSAJES -->
+    <div id="mensajeOk" class="alert alert-success d-none"></div>
+    <div id="mensajeError" class="alert alert-danger d-none"></div>
+
+    <!-- TABLA -->
+    <div class="card-module">
+        <table class="table table-hover align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Origen</th>
+                    <th>Descripción</th>
+                    <th style="width:200px">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody id="tablaClasificaciones"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- MODAL ELIMINAR -->
+<div class="modal fade" id="modalEliminar" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+
+            <div class="modal-header bg-success text-white">
+                <h5>Confirmar eliminación</h5>
+            </div>
+
+            <div class="modal-body">
+                <p>¿Seguro que deseas eliminar?</p>
+                <p id="nombreEliminar" class="fw-bold"></p>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmarEliminar()">Eliminar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const API = "http://localhost:5080/api/clasificaciones";
+        let idEliminar = null;
+
+        // 🔄 GET
+        async function cargarClasificaciones() {
+            const filtro = document.getElementById("filtro").value;
+
+            const res = await fetch(`${API}?filtro=${filtro}`);
+            const data = await res.json();
+
+            const tabla = document.getElementById("tablaClasificaciones");
+            tabla.innerHTML = "";
+
+            data.forEach(c => {
+                tabla.innerHTML += `
+                    <tr>
+                        <td>${c.nombre}</td>
+                        <td>${c.origen}</td>
+                        <td>${c.descripcion}</td>
+                        <td>
+
+                            <!-- ✏️ EDITAR -->
+                            <a href="/Clasificacion/ClasificacionUpdate?id=${c.id}"
+                               class="btn btn-warning btn-sm">
+                                Editar
+                            </a>
+
+                            <!-- 🗑️ ELIMINAR -->
+                            <button class="btn btn-danger btn-sm"
+                                onclick="abrirModal(${c.id}, '${c.nombre}')">
+                                Eliminar
+                            </button>
+
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 🧹 limpiar
+        function limpiar() {
+            document.getElementById("filtro").value = "";
+            cargarClasificaciones();
+        }
+
+        // 🗑️ modal
+        function abrirModal(id, nombre) {
+            idEliminar = id;
+            document.getElementById("nombreEliminar").innerText = nombre;
+
+            const modal = new bootstrap.Modal(document.getElementById('modalEliminar'));
+            modal.show();
+        }
+
+        // ❌ DELETE
+        async function confirmarEliminar() {
+            const res = await fetch(`${API}/${idEliminar}?idUsuario=1`, {
+                method: "DELETE"
+            });
+
+            if (res.ok) {
+                mostrarOk("Eliminado correctamente");
+                cargarClasificaciones();
+            } else {
+                mostrarError("Error al eliminar");
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
+        }
+
+        // 📢 mensajes
+        function mostrarOk(msg) {
+            const div = document.getElementById("mensajeOk");
+            div.innerText = msg;
+            div.classList.remove("d-none");
+        }
+
+        function mostrarError(msg) {
+            const div = document.getElementById("mensajeError");
+            div.innerText = msg;
+            div.classList.remove("d-none");
+        }
+
+        // 🚀 auto load
+        cargarClasificaciones();
+    </script>
+}

@@ -58,6 +58,16 @@ builder.Services.AddScoped<IClasificacionRepository>(provider =>
     return creator.CreateClasificacionRepo();
 });
 
+//CORS para el frontend 🔥
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5051") 
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -68,6 +78,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.MapOpenApi();
 }
+
+//activar cors...
+app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 

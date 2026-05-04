@@ -6,7 +6,7 @@ using ServicioUsuarios.App.Interfaces;
 using ServicioUsuarios.Dominio.Validadores;
 using ServicioUsuarios.Infraestructura.Ayudadores;
 
-namespace ServicioUsuarios.Dominio.Puertos.PuertosEntrada.Controladores
+namespace ServicioUsuarios.Infraestructura.Adaptadores.PuertosEntrada.Controladores
 {
     [ApiController]
     [Route("api/auth")]

@@ -1,0 +1,192 @@
+﻿@page
+@model FrontendVitalCare.Pages.Auth.LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login - Farmacia VitalCare</title>
+    <link rel="stylesheet" href="~/css/login.css" />
+    <style>
+        .d-none {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-container">
+            <a href="/Index" class="brand-link">
+                <img src="~/images/vitalcare.png" alt="VitalCare" class="brand-logo" />
+                <span class="brand-name">VitalCare</span>
+            </a>
+
+            <nav class="topbar-nav">
+                <a href="/Index">Inicio</a>
+                <a href="/Auth/Registrar">Registro</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="login-page">
+        <section class="login-wrapper">
+            <div class="login-left">
+                <span class="login-badge">BIENVENIDO</span>
+
+                <h1>Accede a<br />Farmacia VitalCare</h1>
+
+                <p>
+                    Ingresa al sistema de gestión farmacéutica para administrar
+                    usuarios, inventario, ventas y operaciones de forma segura y eficiente.
+                </p>
+
+                <div class="login-note">
+                    Utiliza tus credenciales para entrar al sistema. Si aún no tienes una cuenta,
+                    puedes registrarte desde la opción correspondiente.
+                </div>
+
+                <div class="login-actions">
+                    <a href="/Index" class="btn-outline-home"> ← Volver al inicio</a>
+                </div>
+            </div>
+
+            <div class="login-right">
+                <div class="login-card">
+                    <div class="logo-wrap">
+                        <img src="~/images/vitalcare.png" alt="VitalCare" class="logo" />
+                    </div>
+
+                    <div class="card-header">
+                        <h2>Iniciar sesión</h2>
+                        <p>Ingresa tus credenciales para acceder al sistema</p>
+                    </div>
+
+                    <form id="formLogin" class="login-form">
+                        <div class="form-group">
+                            <label for="email">Correo electrónico o nombre de usuario</label>
+                            <input type="text"
+                                   id="email"
+                                   placeholder="Ej. usuario@correo.com o nombre de usuario"
+                                   required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+
+                            <div class="password-wrapper">
+                                <input type="password"
+                                       id="password"
+                                       placeholder="••••••••"
+                                       required />
+
+                                <button type="button"
+                                        class="toggle-password"
+                                        id="togglePassword"
+                                        aria-label="Mostrar contraseña"
+                                        aria-pressed="false"
+                                        title="Mostrar contraseña">
+                                    <svg class="icon-eye icon-show" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+
+                                    <svg class="icon-eye icon-hide" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 3l18 18"></path>
+                                        <path d="M10.58 10.58A2 2 0 0 0 12 14a2 2 0 0 0 1.42-.58"></path>
+                                        <path d="M9.88 5.09A9.77 9.77 0 0 1 12 5c6.5 0 10 7 10 7a13.16 13.16 0 0 1-2.17 2.94"></path>
+                                        <path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3.5 7 10 7a9.77 9.77 0 0 0 2.12-.23"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- MENSAJE DE ERROR -->
+                        <div id="mensajeError" class="alert alert-error d-none"></div>
+
+                        <button type="submit" class="btn-login" id="btnLogin">Ingresar</button>
+
+                        <div class="extra-links">
+                            ¿No tienes cuenta?
+                            <a href="/Auth/Registrar">Regístrate</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Lógica del botón para mostrar/ocultar contraseña
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+
+        togglePassword.addEventListener('click', function () {
+            const showingPassword = passwordInput.type === 'text';
+            passwordInput.type = showingPassword ? 'password' : 'text';
+            togglePassword.classList.toggle('active', !showingPassword);
+            togglePassword.setAttribute('aria-pressed', (!showingPassword).toString());
+            togglePassword.setAttribute('aria-label', showingPassword ? 'Mostrar contraseña' : 'Ocultar contraseña');
+            togglePassword.setAttribute('title', showingPassword ? 'Mostrar contraseña' : 'Ocultar contraseña');
+        });
+
+        // -----------------------------------------------------
+        // LÓGICA DE FETCH AL BACKEND
+        // -----------------------------------------------------
+        const API_AUTH = "http://localhost:5290/api/auth";
+
+        document.getElementById("formLogin").addEventListener("submit", async function (e) {
+            e.preventDefault(); // Evita que la página se recargue
+
+            const btn = document.getElementById("btnLogin");
+            btn.innerText = "Ingresando...";
+            btn.disabled = true;
+            document.getElementById("mensajeError").classList.add("d-none");
+
+            // Se envía "email" tal como lo exige [JsonPropertyName("email")] en el Backend
+            const payload = {
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value
+            };
+
+            try {
+                const res = await fetch(`${API_AUTH}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    // El backend devuelve Status 200: { token: "..." }
+                    const data = await res.json();
+
+                    // Guardamos el token en localStorage
+                    localStorage.setItem("token", data.token);
+
+                    // Redirigir a la página principal
+                    window.location.href = "/Index";
+                } else {
+                    // El backend devuelve error (401 o 400): { mensaje: "..." }
+                    const errorData = await res.json();
+                    mostrarError(errorData.mensaje || "Credenciales incorrectas.");
+                }
+            } catch (error) {
+                console.error("Error de conexión:", error);
+                mostrarError("Error de red: No se pudo contactar con el servidor. Verifica que esté en ejecución (Puerto 5080).");
+            } finally {
+                btn.innerText = "Ingresar";
+                btn.disabled = false;
+            }
+        });
+
+        function mostrarError(msg) {
+            const div = document.getElementById("mensajeError");
+            div.innerText = msg;
+            div.classList.remove("d-none");
+        }
+    </script>
+</body>
+</html>

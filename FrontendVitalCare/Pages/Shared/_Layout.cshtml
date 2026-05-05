@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    bool estaAutenticado = !string.IsNullOrWhiteSpace(Context.Session.GetString("Token"));
+    string userNameSesion = Context.Session.GetString("UserName") ?? string.Empty;
+}
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -118,17 +122,34 @@
                                 </ul>
                             </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Auth/Login">
-                                    Login
-                                </a>
-                            </li>
+                            @if (estaAutenticado)
+                            {
+                                <li class="nav-item">
+                                    <span class="nav-link text-warning fw-bold">
+                                        @userNameSesion
+                                    </span>
+                                </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Auth/Register">
-                                    Registro    
-                                </a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Auth/Logout">
+                                        Logout
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Auth/Login">
+                                        Login
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Auth/Register">
+                                        Registro
+                                    </a>
+                                </li>
+                            }
                     </ul>
                 </div>
             </div>
@@ -162,3 +183,5 @@
   </body>
 
 </html>
+
+

@@ -59,7 +59,7 @@ namespace FrontendVitalCare.Pages.Bioquimico
                 return Page();
             }
 
-            Estado.Mensaje = "Usuario registrado correctamente. Revisa las credenciales generadas y tu correo electronico.";
+            Estado.Mensaje = "Usuario registrado correctamente. Revisa las credenciales generadas y tu correo electrónico.";
             Registro = new UsuarioCreateDto { Role = "Bioquimico" };
             CiBase = string.Empty;
             CiComplemento = string.Empty;

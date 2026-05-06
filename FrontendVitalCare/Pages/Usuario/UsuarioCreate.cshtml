@@ -13,7 +13,7 @@
                     <h2 class="mb-0 fw-bold text-white">
                         Registro de Usuario
                     </h2>
-                    <p class="mb-0 small">Las credenciales se generaran y enviaran automaticamente</p>
+                    <p class="mb-0 small">Las credenciales se generarán y enviarán automáticamente</p>
                 </div>
 
                 <div class="med-card-body p-4">
@@ -46,14 +46,13 @@
 
                         <div class="col-md-4 form-floating">
                             <select asp-for="Input.CiExtencion" class="form-select" required>
-                                <option value="">Seleccione</option>
                                 <option value="BE">Beni</option>
                                 <option value="CB">Cochabamba</option>
                                 <option value="CH">Chuquisaca</option>
                                 <option value="LP">La Paz</option>
                                 <option value="OR">Oruro</option>
                                 <option value="PD">Pando</option>
-                                <option value="PT">Potosi</option>
+                                <option value="PT">Potosí</option>
                                 <option value="SC">Santa Cruz</option>
                                 <option value="TJ">Tarija</option>
                             </select>
@@ -62,18 +61,18 @@
 
                         <div class="col-md-4 form-floating">
                             <input asp-for="Input.Telefono" class="form-control med-input" placeholder="Telf" required maxlength="8" />
-                            <label class="ms-2">Telefono</label>
+                            <label class="ms-2">Teléfono</label>
                         </div>
 
                         <div class="col-md-8 form-floating">
                             <input asp-for="Input.Email" type="email" class="form-control med-input" placeholder="Email" required />
-                            <label class="ms-2">Correo Electronico oficial</label>
+                            <label class="ms-2">Correo Electrónico oficial</label>
                         </div>
 
                         <div class="col-md-4 form-floating">
                             <select asp-for="Input.Role" class="form-select med-input">
-                                <option value="Bioquimico">Bioquimico (Personal)</option>
-                                <option value="Admin">Administrador (Gestion)</option>
+                                <option value="Bioquimico">Bioquímico (Personal)</option>
+                                <option value="Admin">Administrador (Gestión)</option>
                             </select>
                             <label class="ms-2">Tipo de acceso</label>
                         </div>

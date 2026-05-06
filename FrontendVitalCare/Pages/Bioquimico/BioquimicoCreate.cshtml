@@ -1,7 +1,7 @@
 @page
 @model FrontendVitalCare.Pages.Bioquimico.BioquimicoCreateModel
 @{
-    ViewData["Title"] = "Nuevo Bioquimico - VitalCare";
+    ViewData["Title"] = "Nuevo Bioquímico - VitalCare";
 }
 
 <div class="container py-5 medicamento-form-page">
@@ -10,8 +10,8 @@
             <div class="med-card shadow border-0" style="border-radius: 15px; overflow: hidden;">
 
                 <div class="med-card-header text-center bg-success text-white py-3">
-                    <h2 class="mb-0 fw-bold text-white">Nuevo Bioquimico</h2>
-                    <p class="mb-0 small">Registra al bioquimico con los datos base del sistema</p>
+                    <h2 class="mb-0 fw-bold text-white">Nuevo Bioquímico</h2>
+                    <p class="mb-0 small">Registra al bioquímico con los datos base del sistema</p>
                 </div>
 
                 <div class="med-card-body p-4">
@@ -65,7 +65,7 @@
                                         <option value="LP">La Paz</option>
                                         <option value="OR">Oruro</option>
                                         <option value="PD">Pando</option>
-                                        <option value="PT">Potosi</option>
+                                        <option value="PT">Potosí</option>
                                         <option value="SC">Santa Cruz</option>
                                         <option value="TJ">Tarija</option>
                                     </select>
@@ -76,20 +76,20 @@
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input asp-for="Registro.Telefono" class="form-control med-input" placeholder="Telefono" />
-                            <label class="ms-2">Telefono</label>
+                            <input asp-for="Registro.Telefono" class="form-control med-input" placeholder="Teléfono" />
+                            <label class="ms-2">Teléfono</label>
                             <span asp-validation-for="Registro.Telefono" class="text-danger"></span>
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input asp-for="Registro.Email" type="email" class="form-control med-input" placeholder="Correo electronico" />
-                            <label class="ms-2">Correo electronico</label>
+                            <input asp-for="Registro.Email" type="email" class="form-control med-input" placeholder="Correo electrónico" />
+                            <label class="ms-2">Correo electrónico</label>
                             <span asp-validation-for="Registro.Email" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
                             <small class="text-muted">
-                                <i class="bi bi-info-circle me-1"></i> El usuario y contrasena se generaran automaticamente.
+                                <i class="bi bi-info-circle me-1"></i> El usuario y contraseña se generarán automáticamente.
                             </small>
                         </div>
 

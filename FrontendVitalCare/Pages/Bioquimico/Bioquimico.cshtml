@@ -1,15 +1,15 @@
 @page
 @model FrontendVitalCare.Pages.Bioquimico.BioquimicoModel
 @{
-    ViewData["Title"] = "Bioquimicos";
+    ViewData["Title"] = "Bioquímicos";
 }
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-success">Bioquimicos Registrados</h2>
+        <h2 class="fw-bold text-success">Bioquímicos Registrados</h2>
 
         <a asp-page="BioquimicoCreate" class="btn-main">
-            + Nuevo Bioquimico
+            + Nuevo Bioquímico
         </a>
     </div>
 
@@ -45,13 +45,13 @@
 
     <div class="card-module">
         <table class="table table-hover align-middle">
-            <caption class="visually-hidden">Tabla de bioquimicos registrados con sus datos principales y acciones disponibles.</caption>
+            <caption class="visually-hidden">Tabla de bioquímicos registrados con sus datos principales y acciones disponibles.</caption>
             <thead class="table-success text-center">
                 <tr>
                     <th>Nombre Completo</th>
                     <th>Carnet</th>
                     <th>Expedido</th>
-                    <th>Telefono</th>
+                    <th>Teléfono</th>
                     <th>Email</th>
                     <th>Username</th>
                     <th>Estado</th>
@@ -112,7 +112,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-muted">No se encontraron bioquimicos.</td>
+                        <td colspan="8" class="text-center py-4 text-muted">No se encontraron bioquímicos.</td>
                     </tr>
                 }
             </tbody>
@@ -135,7 +135,7 @@
             </div>
 
             <div class="modal-body">
-                <p>¿Esta seguro de que desea dar de baja a este bioquimico?</p>
+                <p>¿Está seguro de que desea dar de baja a este bioquímico?</p>
                 <p class="fw-bold" id="nombreBioquimicoEliminar"></p>
             </div>
 

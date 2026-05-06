@@ -1,51 +1,67 @@
 @page
-@model FrontendVitalCare.Pages.ClasificacionUpdateModel
-{
+@model FrontendVitalCare.Pages.Clasificacion.ClasificacionUpdateModel
 
-}
+<div class="container py-5 medicamento-form-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="med-card shadow border-0" style="border-radius: 15px; overflow: hidden;">
+                <div class="med-card-header text-center bg-success text-white py-3">
+                    <h2 class="mb-0 fw-bold text-white">Actualizar Clasificación</h2>
+                    <p class="mb-0 small">Modifica los datos de la clasificación</p>
+                </div>
 
-<div class="container py-5">
-    <div class="col-lg-6 mx-auto">
+                <div class="med-card-body p-4">
+                    @if (Model.Clasificacion != null)
+                    {
+                        <form method="post" asp-page-handler="ActualizarClasificacion">
+                            <input type="hidden" asp-for="Id" />
 
-        <h2 class="text-success mb-4">Actualizar Clasificación</h2>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Nombre" class="form-control" placeholder="Nombre" required />
+                                <label class="ms-2">Nombre de Clasificación</label>
+                            </div>
 
-        <form onsubmit="actualizar(event)">
+                            <div class="form-floating mb-3">
+                                <select asp-for="Origen" class="form-select" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="Natural" selected="@(Model.Origen == "Natural")">Natural</option>
+                                    <option value="Sintético" selected="@(Model.Origen == "Sintético")">Sintético</option>
+                                    <option value="Semisintético" selected="@(Model.Origen == "Semisintético")">Semisintético</option>
+                                </select>
+                                <label class="ms-2">Origen</label>
+                            </div>
 
-            <input type="hidden" id="id" />
+                            <div class="form-floating mb-3">
+                                <textarea asp-for="Descripcion" class="form-control"
+                                          style="height: 120px" required></textarea>
+                                <label class="ms-2">Descripción</label>
+                            </div>
 
-            <div class="mb-3">
-                <input id="nombre" class="form-control" placeholder="Nombre" required />
+                            @if (!string.IsNullOrEmpty(Model.MensajeError))
+                            {
+                                <div class="alert alert-danger">@Model.MensajeError</div>
+                            }
+
+                            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                                <a asp-page="Clasificacion" class="btn btn-secondary">Volver</a>
+                                <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">Actualizar</button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            No se encontraron datos de la clasificación.
+                        </div>
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a asp-page="Clasificacion" class="btn btn-secondary">Volver</a>
+                        </div>
+                    }
+                </div>
             </div>
-
-            <div class="mb-3">
-                <select id="origen" class="form-select" required>
-                    <option value="Natural">Natural</option>
-                    <option value="Sintético">Sintético</option>
-                    <option value="Semisintético">Semisintético</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <textarea id="descripcion" class="form-control" required></textarea>
-            </div>
-
-            <div id="error" class="alert alert-danger d-none"></div>
-            <div id="ok" class="alert alert-success d-none"></div>
-
-            <button class="btn btn-success">Actualizar</button>
-            <a href="/Clasificacion/Clasificacion" class="btn btn-secondary">Volver</a>
-
-        </form>
-
+        </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-
-        // 🔹 obtener ID desde URL
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get("id");
 
         // 🔹 cargar datos
         async function cargar() {

@@ -51,7 +51,7 @@
                     <tr>
                         <td class="fw-semibold">@m.Nombre</td>
                         <td>@m.Presentacion</td>
-                        <td><span class="badge bg-info text-dark">@m.Clasificacion</span></td>
+                        <td><span class="badge bg-info text-dark">@(Model.Clasificaciones.FirstOrDefault(c => c.Id == m.Clasificacion)?.Nombre ?? "N/A")</span></td>
                         <td class="text-success fw-bold">@m.Precio</td>
                         <td>
                             <a asp-page="ActualizarMedicamento" asp-route-id="@m.Id" class="btn btn-warning btn-sm">Editar</a>

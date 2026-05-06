@@ -2,19 +2,23 @@ using FrontendVitalCare.Dto.MedicamentoDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using VitalCareSBA.FrontendVitalCare.Adaptadores;
+using FrontendVitalCare.Dto.ClasificacionDtos;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {
     public class MedicamentoPageModel : PageModel
     {
         private readonly MedicamentoAdapter _medicamentoAdapter;
+        private readonly ClasificacionAdapter _clasificacionAdapter;
 
-        public MedicamentoPageModel(MedicamentoAdapter medicamentoAdapter)
+        public MedicamentoPageModel(MedicamentoAdapter medicamentoAdapter, ClasificacionAdapter clasificacionAdapter)
         {
             _medicamentoAdapter = medicamentoAdapter;
+            _clasificacionAdapter = clasificacionAdapter;
         }
 
         public List<MedicamentoDto> Medicamentos { get; set; } = new();
+        public List<ClasificacionDto> Clasificaciones { get; set; } = new();
 
         [TempData]
         public string? Mensaje { get; set; }
@@ -27,6 +31,9 @@ namespace FrontendVitalCare.Pages.Medicamento
         {
             try
             {
+                // Cargar clasificaciones
+                Clasificaciones = await _clasificacionAdapter.GetAllAsync();
+
                 // Trae todos los medicamentos desde el Adapter
                 Medicamentos = await _medicamentoAdapter.GetAllAsync();
 
@@ -35,15 +42,15 @@ namespace FrontendVitalCare.Pages.Medicamento
                     Medicamentos = Medicamentos
                         .Where(m =>
                             (!string.IsNullOrEmpty(m.Nombre) && m.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase)) ||
-                            (!string.IsNullOrEmpty(m.Clasificacion) && m.Clasificacion.Contains(filtro, StringComparison.OrdinalIgnoreCase)) ||
+                            (Clasificaciones.Any(c => c.Id == m.Clasificacion) && Clasificaciones.First(c => c.Id == m.Clasificacion).Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase)) ||
                             (!string.IsNullOrEmpty(m.Presentacion) && m.Presentacion.Contains(filtro, StringComparison.OrdinalIgnoreCase))
                         )
                         .ToList();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                MensajeError = "No se pudieron cargar los medicamentos.";
+                MensajeError = $"Error: {ex.Message}";
             }
         }
 

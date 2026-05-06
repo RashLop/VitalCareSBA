@@ -41,7 +41,7 @@ namespace FrontendVitalCare.Pages.Auth
                 return Page();
             }
 
-            JwtSessionHelper.GuardarSesionDesdeToken(HttpContext, respuesta.Token);
+            JwtSessionHelper.GuardarSesion(HttpContext, respuesta);
             return RedirectToPage("/Index");
         }
     }

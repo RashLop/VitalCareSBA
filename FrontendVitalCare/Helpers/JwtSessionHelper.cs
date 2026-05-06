@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using FrontendVitalCare.Dto.Auth;
 
 namespace FrontendVitalCare.Helpers
 {
@@ -9,31 +10,48 @@ namespace FrontendVitalCare.Helpers
         private const string ClaimUserName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
         private const string ClaimRole = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
-        public static void GuardarSesionDesdeToken(HttpContext context, string token)
+        public static void GuardarSesion(HttpContext context, UsuarioLoginResponseDto respuesta)
         {
-            context.Session.SetString("Token", token);
+            context.Session.SetString("Token", respuesta.Token);
 
+            if (respuesta.IdUsuario > 0)
+                context.Session.SetInt32("IdUsuario", respuesta.IdUsuario);
+
+            if (!string.IsNullOrWhiteSpace(respuesta.UserName))
+                context.Session.SetString("UserName", respuesta.UserName);
+
+            if (!string.IsNullOrWhiteSpace(respuesta.Role))
+                context.Session.SetString("Role", respuesta.Role);
+
+            context.Session.SetString("MustChangePassword", respuesta.MustChangePassword.ToString());
+
+            CompletarSesionDesdeTokenSiFalta(context, respuesta.Token);
+        }
+
+        private static void CompletarSesionDesdeTokenSiFalta(HttpContext context, string token)
+        {
             Dictionary<string, string> claims = LeerClaims(token);
 
-            if (claims.TryGetValue(ClaimIdUsuario, out string? idUsuarioValue)
+            if (context.Session.GetInt32("IdUsuario") == null
+                && claims.TryGetValue(ClaimIdUsuario, out string? idUsuarioValue)
                 && int.TryParse(idUsuarioValue, out int idUsuario))
             {
                 context.Session.SetInt32("IdUsuario", idUsuario);
             }
 
-            if (claims.TryGetValue(ClaimUserName, out string? userName)
+            if (string.IsNullOrWhiteSpace(context.Session.GetString("UserName"))
+                && claims.TryGetValue(ClaimUserName, out string? userName)
                 && !string.IsNullOrWhiteSpace(userName))
             {
                 context.Session.SetString("UserName", userName);
             }
 
-            if (claims.TryGetValue(ClaimRole, out string? role)
+            if (string.IsNullOrWhiteSpace(context.Session.GetString("Role"))
+                && claims.TryGetValue(ClaimRole, out string? role)
                 && !string.IsNullOrWhiteSpace(role))
             {
                 context.Session.SetString("Role", role);
             }
-
-            context.Session.SetString("MustChangePassword", "False");
         }
 
         private static Dictionary<string, string> LeerClaims(string token)

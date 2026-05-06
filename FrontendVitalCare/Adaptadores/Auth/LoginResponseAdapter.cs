@@ -9,9 +9,27 @@ namespace FrontendVitalCare.Adaptadores.Auth
         {
             return new UsuarioLoginResponseDto
             {
+                IdUsuario = origen.TryGetProperty("idUsuario", out JsonElement idUsuarioElement)
+                    && idUsuarioElement.TryGetInt32(out int idUsuario)
+                        ? idUsuario
+                        : 0,
+                UserName = origen.TryGetProperty("userName", out JsonElement userNameElement)
+                    ? userNameElement.GetString() ?? string.Empty
+                    : string.Empty,
+                Role = origen.TryGetProperty("role", out JsonElement roleElement)
+                    ? roleElement.GetString() ?? string.Empty
+                    : string.Empty,
+                MustChangePassword = origen.TryGetProperty("mustChangePassword", out JsonElement mustChangePasswordElement)
+                    && mustChangePasswordElement.ValueKind is JsonValueKind.True or JsonValueKind.False
+                        ? mustChangePasswordElement.GetBoolean()
+                        : false,
                 Token = origen.TryGetProperty("token", out JsonElement tokenElement)
                     ? tokenElement.GetString() ?? string.Empty
-                    : string.Empty
+                    : string.Empty,
+                ExpiraEn = origen.TryGetProperty("expiraEn", out JsonElement expiraEnElement)
+                    && expiraEnElement.TryGetInt32(out int expiraEn)
+                        ? expiraEn
+                        : 0
             };
         }
 

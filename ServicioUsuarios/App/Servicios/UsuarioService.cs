@@ -57,7 +57,7 @@ namespace ServicioUsuarios.App.Servicios
                 return resultadoToken;
 
             string tokenSeguro = Uri.EscapeDataString(tokenParaUrl);
-            string enlaceActivacion = $"http://localhost:5051/api/auth/validar-activacion?token={tokenSeguro}";
+            string enlaceActivacion = $"http://localhost:5051/Auth/ActivarCuenta?token={tokenSeguro}";
 
             return _emailService.EnviarCorreoActivacionCuenta(
                 usuarioRegistrado.Email,

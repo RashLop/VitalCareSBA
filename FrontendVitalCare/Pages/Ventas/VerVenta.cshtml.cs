@@ -4,7 +4,6 @@ using FrontendVitalCare.Dto.VentasDtos;
 using FrontendVitalCare.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Ventas
 {

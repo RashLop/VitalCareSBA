@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+@{
+    string usuarioSesion = Context.Session.GetString("UserName") ?? string.Empty;
+    string roleSesion = Context.Session.GetString("Role")?.Trim() ?? string.Empty;
+    bool estaAutenticado = !string.IsNullOrWhiteSpace(usuarioSesion);
+    bool esAdministrador = roleSesion.Equals("Admin", StringComparison.OrdinalIgnoreCase);
+}
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -38,7 +44,6 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarVitalCare">
-
                     <ul class="navbar-nav ms-auto">
 
                         <li class="nav-item">
@@ -49,6 +54,10 @@
                             <a class="nav-link" asp-page="/Privacy">Privacidad</a>
                         </li>
 
+                        @if (estaAutenticado)
+                        {
+                            if (esAdministrador)
+                            {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle fw-bold text-warning"
                                        href="#"
@@ -71,6 +80,7 @@
                                         </li>
                                     </ul>
                                 </li>
+                            }
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle"
@@ -119,6 +129,18 @@
                             </li>
 
                             <li class="nav-item">
+                                <span class="nav-link text-light">Hola, <b>@usuarioSesion (@roleSesion)</b></span>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-warning fw-bold" asp-page="/Auth/Logout">
+                                    Cerrar Sesión
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
                                 <a class="nav-link" asp-page="/Auth/Login">
                                     Login
                                 </a>
@@ -126,16 +148,16 @@
 
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Auth/Register">
-                                    Registro    
+                                    Registro
                                 </a>
                             </li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
-    @* Contenedor para el cuerpo *@
     <main role="main" class="flex-grow-1">
         @RenderBody()
     </main>
@@ -144,23 +166,23 @@
         <div class="container text-center">
             <p class="mb-0">
                 &copy; 2026 Farmacia VitalCare - Sistema de Gestión Farmacéutica
-             </p>
-         </div>
+            </p>
+        </div>
     </footer>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         window.addEventListener("scroll", function () {
-          let navbar = document.querySelector(".navbar");
+            let navbar = document.querySelector(".navbar");
             navbar.classList.toggle("scrolled", window.scrollY > 50);
-          });
+        });
     </script>
 
     <script src="~/js/adapters/clasificacionAdapter.js"></script>
 
     @RenderSection("Scripts", required: false)
 
-  </body>
+</body>
 
 </html>

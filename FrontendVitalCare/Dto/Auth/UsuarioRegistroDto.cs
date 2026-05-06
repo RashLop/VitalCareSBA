@@ -20,6 +20,7 @@ namespace FrontendVitalCare.Dto.Auth
         public string CiExtencion { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El telefono es obligatorio.")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "El telefono debe contener solo digitos numericos.")]
         public string Telefono { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El correo electronico es obligatorio.")]

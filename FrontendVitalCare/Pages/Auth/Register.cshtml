@@ -138,7 +138,10 @@
                                 <input type="text"
                                        asp-for="Registro.Telefono"
                                        placeholder="Ej. 71234567"
-                                       required />
+                                       required
+                                       maxlength="8"
+                                       pattern="\d{8}"
+                                       title="Debe ingresar 8 digitos numericos." />
                             </div>
 
                             <div class="form-group full-width">

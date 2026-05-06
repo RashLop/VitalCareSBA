@@ -29,7 +29,14 @@ namespace FrontendVitalCare.Pages.Auth
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
+            {
+                MensajeError = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m))
+                    ?? "Verifica los datos del formulario.";
                 return Page();
+            }
 
             OperacionApiDto resultado = await _authClient.RegistrarAsync(Registro);
 

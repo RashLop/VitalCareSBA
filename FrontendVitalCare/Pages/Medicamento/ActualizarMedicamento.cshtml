@@ -1,0 +1,88 @@
+@page
+@model FrontendVitalCare.Pages.Medicamento.ActualizarMedicamentoModel
+
+<div class="container py-5 medicamento-form-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="med-card shadow border-0" style="border-radius: 15px; overflow: hidden;">
+                <div class="med-card-header text-center bg-success text-white py-3">
+                    <h2 class="mb-0 fw-bold text-white">Actualizar Medicamento</h2>
+                    <p class="mb-0 small">Modifica los datos del medicamento seleccionado</p>
+                </div>
+
+                <div class="med-card-body p-4">
+                    @if (Model.Medicamento != null)
+                    {
+                        <form method="post" asp-page-handler="ActualizarMedicamento">
+                            <input type="hidden" asp-for="Id" />
+
+                            <div class="form-floating mb-3">
+                                <input asp-for="Nombre" class="form-control med-input" placeholder="Nombre" required />
+                                <label class="ms-2">Nombre del Medicamento</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <select asp-for="Presentacion" class="form-select med-input" required>
+                                    <option value="">Seleccione presentación</option>
+                                    <option value="Cápsulas" selected="@(Model.Presentacion == "Cápsulas")">Cápsulas</option>
+                                    <option value="Tabletas" selected="@(Model.Presentacion == "Tabletas")">Tabletas</option>
+                                    <option value="Jarabe" selected="@(Model.Presentacion == "Jarabe")">Jarabe</option>
+                                    <option value="Suspensión" selected="@(Model.Presentacion == "Suspensión")">Suspensión</option>
+                                    <option value="Inyectable" selected="@(Model.Presentacion == "Inyectable")">Inyectable</option>
+                                    <option value="Crema" selected="@(Model.Presentacion == "Crema")">Crema</option>
+                                    <option value="Pomada" selected="@(Model.Presentacion == "Pomada")">Pomada</option>
+                                    <option value="Gotas" selected="@(Model.Presentacion == "Gotas")">Gotas</option>
+                                    <option value="Polvo" selected="@(Model.Presentacion == "Polvo")">Polvo</option>
+                                </select>
+                                <label class="ms-2">Presentación</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input asp-for="Clasificacion" class="form-control med-input" placeholder="Clasificación" required />
+                                <label class="ms-2">Clasificación</label>
+                            </div>
+
+                            <div class="form-floating mb-1">
+                                <input asp-for="Concentracion" class="form-control med-input" placeholder="Ej: 500 mg" required />
+                                <label class="ms-2">Concentración</label>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label d-block small fw-bold">Precio</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-success fw-bold">Bs.</span>
+                                        <input asp-for="Precio" type="number" step="0.01" class="form-control med-input" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label d-block small fw-bold">Stock Actual</label>
+                                    <input asp-for="Stock" type="number" min="0" class="form-control med-input" required />
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.MensajeError))
+                            {
+                                <div class="alert alert-danger border-0 shadow-sm">@Model.MensajeError</div>
+                            }
+
+                            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                                <a asp-page="Medicamento" class="btn btn-secondary px-4">Volver</a>
+                                <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm" style="background-color: #198754;">Actualizar</button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            No se encontraron datos del medicamento.
+                        </div>
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a asp-page="Medicamento" class="btn btn-secondary px-4">Volver</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,7 +3,6 @@ using FrontendVitalCare.Dto.VentasDtos;
 using FrontendVitalCare.Adaptadores;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using VitalCareSBA.FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Dto;
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using System.Text.Json;

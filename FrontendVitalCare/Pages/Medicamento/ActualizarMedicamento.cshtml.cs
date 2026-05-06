@@ -2,7 +2,7 @@ using FrontendVitalCare.Dto.MedicamentoDtos;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using VitalCareSBA.FrontendVitalCare.Adaptadores;
+using FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {

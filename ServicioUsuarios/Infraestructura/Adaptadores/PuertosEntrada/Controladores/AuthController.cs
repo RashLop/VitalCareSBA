@@ -34,7 +34,7 @@ namespace ServicioUsuarios.Infraestructura.Adaptadores.PuertosEntrada.Controlado
             if (!resultado.IsSuccess || respuesta == null)
                 return Unauthorized(new { mensaje = resultado.Error });
 
-            return Ok(new { token = respuesta.Token });
+            return Ok(respuesta);
         }
 
         [HttpPost("registrar")]

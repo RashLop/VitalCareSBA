@@ -1,8 +1,8 @@
 using System.Net.Http.Json;
 
-namespace VitalCareSBA.FrontendVitalCare.Adaptadores
+namespace FrontendVitalCare.Adaptadores
 {
-    public class AdapterJSON<T> : IAdapter<T>
+    public class AdapterJSON<T>
     {
         private readonly HttpClient _httpClient;
 

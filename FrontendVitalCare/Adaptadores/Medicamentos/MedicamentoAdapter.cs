@@ -1,12 +1,12 @@
 using FrontendVitalCare.Dto.MedicamentoDtos;
 
-namespace VitalCareSBA.FrontendVitalCare.Adaptadores
+namespace FrontendVitalCare.Adaptadores
 {
     public class MedicamentoAdapter
     {
-        private readonly IAdapter<MedicamentoDto> _adapter;
+        private readonly AdapterJSON<MedicamentoDto> _adapter;
 
-        public MedicamentoAdapter(IAdapter<MedicamentoDto> adapter)
+        public MedicamentoAdapter(AdapterJSON<MedicamentoDto> adapter)
         {
             _adapter = adapter;
         }

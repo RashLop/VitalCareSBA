@@ -1,23 +1,49 @@
 using System.Text.Json;
 using FrontendVitalCare.Adaptadores;
+using FrontendVitalCare.Adaptadores.Auth;
+using FrontendVitalCare.Dto;
+using FrontendVitalCare.Dto.Auth;
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using FrontendVitalCare.Dto.VentasDtos;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using FrontendVitalCare.Services;
-using VitalCareSBA.FrontendVitalCare.Adaptadores;
+using FrontendVitalCare.Servicios;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(8);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddHttpClient<ClienteApiAdapter>(client =>
 {
-    string baseUrl = builder.Configuration["ApiUrls:ServicioVentas"]!;
+    string baseUrl = builder.Configuration["ApiUrls:ServicioVentas"]
+        ?? builder.Configuration["Servicios:VentasBaseUrl"]
+        ?? "http://localhost:5080/";
+    client.BaseAddress = new Uri(baseUrl);
+});
+builder.Services.AddHttpClient<AuthClient>(client =>
+{
+    string baseUrl = builder.Configuration["ApiUrls:Usuarios"]
+        ?? builder.Configuration["ApiUrls:ServicioUsuario"]
+        ?? "http://localhost:5290/";
     client.BaseAddress = new Uri(baseUrl);
 });
 
+builder.Services.AddScoped<IAdapter<JsonElement, UsuarioLoginResponseDto>, LoginResponseAdapter>();
+builder.Services.AddScoped<IAdapter<JsonElement, MensajeApiDto>, MensajeApiAdapter>();
+
 builder.Services.AddHttpClient<AdapterJSON<MedicamentoDto>>(cliente => ///Api
 {
-    cliente.BaseAddress = new Uri(builder.Configuration["ApiUrls:ServicioVentas"]!);
+    string baseUrl = builder.Configuration["ApiUrls:ServicioVentas"]
+        ?? builder.Configuration["Servicios:VentasBaseUrl"]
+        ?? "http://localhost:5080/";
+    cliente.BaseAddress = new Uri(baseUrl);
 });
 
 builder.Services.AddScoped<MedicamentoAdapter>(sp =>
@@ -29,7 +55,10 @@ builder.Services.AddScoped<MedicamentoAdapter>(sp =>
 // Registrar AdapterJSON para Ventas
 builder.Services.AddHttpClient<AdapterJSON<VentaDto>>(client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["ApiUrls:ServicioVentas"] ?? throw new InvalidOperationException("ApiUrls:ServicioVentas missing"));
+    string baseUrl = builder.Configuration["ApiUrls:ServicioVentas"]
+        ?? builder.Configuration["Servicios:VentasBaseUrl"]
+        ?? throw new InvalidOperationException("No se encontro la URL de ServicioVentas.");
+    client.BaseAddress = new Uri(baseUrl);
 });
 
 // Registrar VentaClient
@@ -58,6 +87,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseRouting();
 
+app.UseSession();
 app.UseAuthorization();
 
 app.MapStaticAssets();

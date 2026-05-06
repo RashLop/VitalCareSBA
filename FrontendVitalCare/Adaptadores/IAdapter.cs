@@ -1,11 +1,8 @@
-namespace VitalCareSBA.FrontendVitalCare.Adaptadores
+namespace FrontendVitalCare.Adaptadores
 {
-    public interface IAdapter<T>
+    public interface IAdapter<TOrigen, TDestino>
     {
-        Task<List<T>> GetListAsync(string url);
-        Task<T?> GetAsync(string url);
-        Task<bool> PostAsync(string url, T data); ///Post actualizar o crear
-        Task<bool> PutAsync(string url, T data); /// Actualizar 
-        Task<bool> DeleteAsync(string url); //Eliminar
+        TDestino Adapt(TOrigen origen);
+        List<TDestino> AdaptList(IEnumerable<TOrigen> origen);
     }
 }

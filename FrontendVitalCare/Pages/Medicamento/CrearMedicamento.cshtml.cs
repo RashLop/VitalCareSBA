@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using System.Data;
-using VitalCareSBA.FrontendVitalCare.Adaptadores;
+using FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {

@@ -1,5 +1,5 @@
 using FrontendVitalCare.Dto.VentasDtos;
-using VitalCareSBA.FrontendVitalCare.Adaptadores;
+using FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Services
 {

@@ -1,9 +1,11 @@
 using System.Text.Json;
 using FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Adaptadores.Auth;
+using FrontendVitalCare.Adaptadores.Usuarios;
 using FrontendVitalCare.Dto;
 using FrontendVitalCare.Dto.Auth;
 using FrontendVitalCare.Dto.MedicamentoDtos;
+using FrontendVitalCare.Dto.Usuarios;
 using FrontendVitalCare.Dto.VentasDtos;
 using FrontendVitalCare.Services;
 using FrontendVitalCare.Servicios;
@@ -12,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(8);
@@ -33,9 +36,17 @@ builder.Services.AddHttpClient<AuthClient>(client =>
         ?? "http://localhost:5290/";
     client.BaseAddress = new Uri(baseUrl);
 });
+builder.Services.AddHttpClient<UsuarioClient>(client =>
+{
+    string baseUrl = builder.Configuration["ApiUrls:Usuarios"]
+        ?? builder.Configuration["ApiUrls:ServicioUsuario"]
+        ?? "http://localhost:5290/";
+    client.BaseAddress = new Uri(baseUrl);
+});
 
 builder.Services.AddScoped<IAdapter<JsonElement, UsuarioLoginResponseDto>, LoginResponseAdapter>();
 builder.Services.AddScoped<IAdapter<JsonElement, MensajeApiDto>, MensajeApiAdapter>();
+builder.Services.AddScoped<IAdapter<JsonElement, UsuarioDto>, UsuarioAdapter>();
 
 builder.Services.AddHttpClient<AdapterJSON<MedicamentoDto>>(cliente => ///Api
 {

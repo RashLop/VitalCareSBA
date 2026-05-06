@@ -1,0 +1,111 @@
+@page
+@model FrontendVitalCare.Pages.Ventas.VerVentaModel
+@{
+    ViewData["Title"] = "Detalle de Venta";
+}
+
+<div class="container py-5 medicamento-form-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="med-card shadow-sm">
+                <div class="med-card-header text-center">
+                    <h2 class="mb-0">Detalle de Venta</h2>
+                    <p class="text-muted mt-2 mb-0">Datos de la venta seleccionada</p>
+                </div>
+
+                <div class="med-card-body">
+
+                    @if (Model.Venta != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold d-block text-start">Cliente (NIT)</label>
+
+                                <div class="form-control-plaintext text-start fw-semibold py-1">
+                                    @Model.Venta.Nit
+                                </div>
+
+                                <label class="form-label fw-bold mt-2 d-block text-start">Cliente:</label>
+                                <div class="form-control-plaintext text-start fw-semibold py-1">
+                                    @Model.Venta.RazonSocial
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label d-block text-start">Método de Pago</label>
+                                <div class="form-control-plaintext text-start fw-semibold py-1">
+                                    @Model.Venta.MetodoPago
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Detalle de venta</h5>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle" id="tablaDetalles">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th>Medicamento</th>
+                                        <th style="width:130px;">Cantidad</th>
+                                        <th style="width:160px;">Precio Unitario (Bs)</th>
+                                        <th style="width:140px;">Subtotal (Bs)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detalleBody">
+                                    @foreach (var detalle in Model.Venta.Detalles)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <span class="form-control-plaintext text-start px-2">@detalle.NombreMedicamento</span>
+                                            </td>
+                                            <td>
+                                                <span class="detalle-cantidad form-control-plaintext text-start px-2">@detalle.Cantidad</span>
+                                            </td>
+                                            <td>
+                                                <span class="detalle-precio form-control-plaintext text-start px-2">@detalle.PrecioUnitario.ToString("N2")</span>
+                                            </td>
+                                            <td>
+                                                <span class="subtotal-text text-start d-block px-2">@detalle.Subtotal.ToString("N2")</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="text-end mb-3">
+                            <h5>Total: <span class="text-success" id="totalVenta">Bs. @Model.Venta.Total.ToString("N2")</span></h5>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.MensajeError))
+                        {
+                            <div class="alert alert-danger med-alert" role="alert">
+                                @Model.MensajeError
+                            </div>
+                        }
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-page="Venta" class="btn med-btn-secondary">Volver</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            No se encontraron datos de la venta.
+                        </div>
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-page="Venta" class="btn med-btn-secondary">Volver</a>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

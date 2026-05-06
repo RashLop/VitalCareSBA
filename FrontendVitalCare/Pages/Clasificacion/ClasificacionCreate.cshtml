@@ -63,50 +63,43 @@
 </div>
 
 @section Scripts {
-<script>
-    const API = "http://localhost:5080/api/clasificaciones";
+    <script>
 
-    async function crear(event) {
-        event.preventDefault(); // 🚫 evita POST clásico
+        async function crear(event) {
+            event.preventDefault();
 
-        const data = {
-            nombre: document.getElementById("nombre").value,
-            origen: document.getElementById("origen").value,
-            descripcion: document.getElementById("descripcion").value,
-            idUsuario: 1 // ⚠️ luego puedes hacerlo dinámico
-        };
+            const data = {
+                nombre: document.getElementById("nombre").value,
+                origen: document.getElementById("origen").value,
+                descripcion: document.getElementById("descripcion").value,
+                idUsuario: 1
+            };
 
-        const res = await fetch(API, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
+            const res = await ClasificacionAdapter.crear(data);
 
-        if (res.ok) {
-            mostrarOk("Clasificación creada");
+            if (res.ok) {
+                mostrarOk("Clasificación creada");
 
-            // 🔁 opcional: redirigir
-            setTimeout(() => {
-                        window.location.href = "/Clasificacion/Clasificacion";
-            }, 1000);
+                setTimeout(() => {
+                    window.location.href = "/Clasificacion/Clasificacion";
+                }, 1000);
 
-        } else {
-            mostrarError("Error al crear clasificación");
+            } else {
+                mostrarError(res.data?.mensaje || "Error al crear clasificación");
+            }
         }
-    }
 
-    function mostrarOk(msg) {
-        const div = document.getElementById("ok");
-        div.innerText = msg;
-        div.classList.remove("d-none");
-    }
+        function mostrarOk(msg) {
+            const div = document.getElementById("ok");
+            div.innerText = msg;
+            div.classList.remove("d-none");
+        }
 
-    function mostrarError(msg) {
-        const div = document.getElementById("error");
-        div.innerText = msg;
-        div.classList.remove("d-none");
-    }
-</script>
+        function mostrarError(msg) {
+            const div = document.getElementById("error");
+            div.innerText = msg;
+            div.classList.remove("d-none");
+        }
+
+    </script>
 }

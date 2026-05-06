@@ -78,15 +78,20 @@
 
 @section Scripts {
     <script>
-        const API = "http://localhost:5080/api/clasificaciones";
         let idEliminar = null;
 
         // 🔄 GET
         async function cargarClasificaciones() {
             const filtro = document.getElementById("filtro").value;
 
-            const res = await fetch(`${API}?filtro=${filtro}`);
-            const data = await res.json();
+            const res = await ClasificacionAdapter.obtenerTodos(filtro);
+
+            if (!res.ok) {
+                mostrarError("Error al cargar");
+                return;
+            }
+
+            const data = res.data;
 
             const tabla = document.getElementById("tablaClasificaciones");
             tabla.innerHTML = "";
@@ -98,19 +103,15 @@
                         <td>${c.origen}</td>
                         <td>${c.descripcion}</td>
                         <td>
-
-                            <!-- ✏️ EDITAR -->
                             <a href="/Clasificacion/ClasificacionUpdate?id=${c.id}"
                                class="btn btn-warning btn-sm">
                                 Editar
                             </a>
 
-                            <!-- 🗑️ ELIMINAR -->
                             <button class="btn btn-danger btn-sm"
                                 onclick="abrirModal(${c.id}, '${c.nombre}')">
                                 Eliminar
                             </button>
-
                         </td>
                     </tr>
                 `;
@@ -132,11 +133,9 @@
             modal.show();
         }
 
-        // ❌ DELETE
+        // ❌ DELETE (usando adapter)
         async function confirmarEliminar() {
-            const res = await fetch(`${API}/${idEliminar}?idUsuario=1`, {
-                method: "DELETE"
-            });
+            const res = await ClasificacionAdapter.eliminar(idEliminar);
 
             if (res.ok) {
                 mostrarOk("Eliminado correctamente");

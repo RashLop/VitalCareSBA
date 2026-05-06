@@ -87,7 +87,7 @@ namespace ServicioUsuarios.App.Servicios
 
         public UsuarioToken? ValidarToken(string tokenPlano, string tipoToken)
         {
-            tokenPlano = tokenPlano?.Trim() ?? string.Empty;
+            tokenPlano = NormalizarTokenPlano(tokenPlano);
             tipoToken = tipoToken?.Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(tokenPlano) || string.IsNullOrWhiteSpace(tipoToken))
@@ -156,6 +156,52 @@ namespace ServicioUsuarios.App.Servicios
                 return Result.Fail("Los minutos de expiracion deben ser mayores a cero.");
 
             return Result.Ok();
+        }
+
+        private static string NormalizarTokenPlano(string? tokenPlano)
+        {
+            string tokenNormalizado = tokenPlano?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(tokenNormalizado))
+                return string.Empty;
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (!ContieneSecuenciaUrlEncoded(tokenNormalizado))
+                    break;
+
+                try
+                {
+                    string tokenDecodificado = Uri.UnescapeDataString(tokenNormalizado);
+                    if (tokenDecodificado == tokenNormalizado)
+                        break;
+
+                    tokenNormalizado = tokenDecodificado.Trim();
+                }
+                catch (UriFormatException)
+                {
+                    break;
+                }
+            }
+
+            return tokenNormalizado;
+        }
+
+        private static bool ContieneSecuenciaUrlEncoded(string valor)
+        {
+            for (int i = 0; i < valor.Length - 2; i++)
+            {
+                if (valor[i] == '%' && EsHexadecimal(valor[i + 1]) && EsHexadecimal(valor[i + 2]))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool EsHexadecimal(char caracter)
+        {
+            return (caracter >= '0' && caracter <= '9')
+                || (caracter >= 'A' && caracter <= 'F')
+                || (caracter >= 'a' && caracter <= 'f');
         }
     }
 }

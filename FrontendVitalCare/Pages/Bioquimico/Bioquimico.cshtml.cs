@@ -57,7 +57,7 @@ namespace FrontendVitalCare.Pages.Bioquimico
             return RedirectToPage("Bioquimico", new
             {
                 filtro = Estado.FiltroActual,
-                mensaje = "Bioquimico dado de baja correctamente"
+                mensaje = "Bioquímico dado de baja correctamente"
             });
         }
 
@@ -73,11 +73,7 @@ namespace FrontendVitalCare.Pages.Bioquimico
             var (resultado, usuarios) = await _usuarioClient.ObtenerTodosAsync(filtro);
             Bioquimicos = usuarios
                 .Where(usuario =>
-                    usuario.Activo == 1 &&
                     string.Equals(usuario.Role?.Trim(), RolBioquimico, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(usuario => usuario.Nombres)
-                .ThenBy(usuario => usuario.ApellidoPaterno)
-                .ThenBy(usuario => usuario.ApellidoMaterno)
                 .ToList();
 
             if (!resultado.Exito && string.IsNullOrWhiteSpace(Estado.MensajeError))

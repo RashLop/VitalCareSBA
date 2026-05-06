@@ -70,12 +70,7 @@ namespace FrontendVitalCare.Pages.Usuario
         private async Task CargarUsuariosAsync(string filtro)
         {
             var (resultado, usuarios) = await _usuarioClient.ObtenerTodosAsync(filtro);
-            Usuarios = usuarios
-                .Where(usuario => usuario.Activo == 1)
-                .OrderBy(usuario => usuario.Nombres)
-                .ThenBy(usuario => usuario.ApellidoPaterno)
-                .ThenBy(usuario => usuario.ApellidoMaterno)
-                .ToList();
+            Usuarios = usuarios;
 
             if (!resultado.Exito && string.IsNullOrWhiteSpace(Estado.MensajeError))
                 Estado.MensajeError = resultado.Mensaje;

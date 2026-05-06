@@ -35,7 +35,7 @@ namespace FrontendVitalCare.Pages.Bioquimico
             if (acceso != null)
                 return acceso;
 
-            return RedirectToPage("Bioquimico");
+            return Page();
         }
 
         public async Task<IActionResult> OnPostCargarBioquimicoParaEdicionAsync(int id)
@@ -46,7 +46,7 @@ namespace FrontendVitalCare.Pages.Bioquimico
 
             var (resultado, usuario) = await _usuarioClient.ObtenerPorIdAsync(id);
             if (!resultado.Exito || usuario == null || !EsBioquimico(usuario.Role))
-                return RedirectToPage("Bioquimico", new { error = "Bioquimico no encontrado" });
+                return RedirectToPage("Bioquimico", new { error = "Bioquímico no encontrado" });
 
             string ciCompleto = usuario.Ci?.Trim() ?? string.Empty;
             int separador = ciCompleto.IndexOf('-');
@@ -82,6 +82,10 @@ namespace FrontendVitalCare.Pages.Bioquimico
             Input.Role = "Bioquimico";
             Input.Ci = ConstruirCi(CiBase, CiComplemento);
 
+            var (resultadoUsuarioActual, usuarioActual) = await _usuarioClient.ObtenerPorIdAsync(Input.IdUsuario);
+            if (!resultadoUsuarioActual.Exito || usuarioActual == null || !EsBioquimico(usuarioActual.Role))
+                return RedirectToPage("Bioquimico", new { error = "Bioquímico no encontrado o rol inválido" });
+
             ModelState.Remove("Input.Ci");
             if (!TryValidateModel(Input, nameof(Input)))
             {
@@ -96,7 +100,7 @@ namespace FrontendVitalCare.Pages.Bioquimico
                 return Page();
             }
 
-            return RedirectToPage("Bioquimico", new { mensaje = "Bioquimico actualizado correctamente" });
+            return RedirectToPage("Bioquimico", new { mensaje = "Bioquímico actualizado correctamente" });
         }
 
         private static bool EsBioquimico(string? role)

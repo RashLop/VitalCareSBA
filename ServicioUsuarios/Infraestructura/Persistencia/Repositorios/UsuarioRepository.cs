@@ -138,10 +138,22 @@ namespace ServicioUsuarios.Infraestructura.Persistencia.Repositorios
                                     fecha_registro, ultima_actualizacion, id_usuario, ci_extencion,
                                     email, user_name, password_hash, role, must_change_password
                              FROM usuario
-                             WHERE 1 = 1";
+                             WHERE activo = 1";
 
-            string where = FiltroSqlHelper.ConstruirCondicionLike(filtro, "nombres", "apellido_paterno", "apellido_materno", "ci", "email", "user_name");
-            cmd.CommandText = query + where;
+            string where = FiltroSqlHelper.ConstruirCondicionLike(
+                filtro,
+                "nombres",
+                "apellido_paterno",
+                "apellido_materno",
+                "ci",
+                "telefono",
+                "ci_extencion",
+                "email",
+                "user_name",
+                "role"
+            );
+
+            cmd.CommandText = query + where + " ORDER BY nombres, apellido_paterno, apellido_materno";
             cmd.Connection = conn;
             FiltroSqlHelper.AgregarParametrosLike(cmd, filtro);
 

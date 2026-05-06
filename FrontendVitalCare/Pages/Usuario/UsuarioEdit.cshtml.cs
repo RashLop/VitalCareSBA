@@ -24,7 +24,7 @@ namespace FrontendVitalCare.Pages.Usuario
             if (acceso != null)
                 return acceso;
 
-            return RedirectToPage("Usuario");
+            return Page();
         }
 
         public async Task<IActionResult> OnPostCargarUsuarioParaEdicionAsync(int id)

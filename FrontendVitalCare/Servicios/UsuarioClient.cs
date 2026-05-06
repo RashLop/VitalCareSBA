@@ -4,7 +4,6 @@ using System.Text.Json;
 using FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Dto;
 using FrontendVitalCare.Dto.Usuarios;
-using FrontendVitalCare.Helpers;
 
 namespace FrontendVitalCare.Servicios
 {
@@ -31,7 +30,8 @@ namespace FrontendVitalCare.Servicios
         {
             ConfigurarAutorizacion();
 
-            HttpResponseMessage response = await _httpClient.GetAsync("api/usuarios/GetUsers");
+            string filtroUrl = Uri.EscapeDataString(filtro ?? string.Empty);
+            HttpResponseMessage response = await _httpClient.GetAsync($"api/usuarios/GetUsers?filtro={filtroUrl}");
             if (!response.IsSuccessStatusCode)
             {
                 string mensajeError = await LeerMensajeAsync(response, "No se pudieron obtener los usuarios.");
@@ -41,11 +41,10 @@ namespace FrontendVitalCare.Servicios
             JsonElement? json = await LeerJsonAsync(response);
             if (json == null || !json.Value.TryGetProperty("data", out JsonElement dataElement) || dataElement.ValueKind != JsonValueKind.Array)
             {
-                return (OperacionApiDto.Error("La respuesta del servidor no contiene usuarios validos."), new List<UsuarioDto>());
+                return (OperacionApiDto.Error("La respuesta del servidor no contiene usuarios válidos."), new List<UsuarioDto>());
             }
 
             List<UsuarioDto> usuarios = _usuarioAdapter.AdaptList(dataElement.EnumerateArray());
-            usuarios = AplicarFiltro(usuarios, filtro);
 
             string mensaje = await LeerMensajeAsync(response, "Usuarios obtenidos correctamente.");
             return (OperacionApiDto.Ok(mensaje), usuarios);
@@ -53,14 +52,24 @@ namespace FrontendVitalCare.Servicios
 
         public async Task<(OperacionApiDto Resultado, UsuarioDto? Usuario)> ObtenerPorIdAsync(int idUsuario)
         {
-            var (resultado, usuarios) = await ObtenerTodosAsync(string.Empty);
-            if (!resultado.Exito)
-                return (resultado, null);
+            ConfigurarAutorizacion();
 
-            UsuarioDto? usuario = usuarios.FirstOrDefault(u => u.IdUsuario == idUsuario);
-            return usuario == null
-                ? (OperacionApiDto.Error("Usuario no encontrado."), null)
-                : (OperacionApiDto.Ok("Usuario obtenido correctamente."), usuario);
+            HttpResponseMessage response = await _httpClient.GetAsync($"api/usuarios/getUserById?id={idUsuario}");
+            if (!response.IsSuccessStatusCode)
+            {
+                string mensajeError = await LeerMensajeAsync(response, "No se pudo obtener el usuario.");
+                return (OperacionApiDto.Error(mensajeError), null);
+            }
+
+            JsonElement? json = await LeerJsonAsync(response);
+            if (json == null || !json.Value.TryGetProperty("data", out JsonElement dataElement) || dataElement.ValueKind != JsonValueKind.Object)
+            {
+                return (OperacionApiDto.Error("La respuesta del servidor no contiene un usuario válido."), null);
+            }
+
+            UsuarioDto usuario = _usuarioAdapter.Adapt(dataElement);
+            string mensaje = await LeerMensajeAsync(response, "Usuario obtenido correctamente.");
+            return (OperacionApiDto.Ok(mensaje), usuario);
         }
 
         public async Task<OperacionApiDto> CrearAsync(UsuarioCreateDto request)
@@ -102,36 +111,6 @@ namespace FrontendVitalCare.Servicios
             _httpClient.DefaultRequestHeaders.Authorization = string.IsNullOrWhiteSpace(token)
                 ? null
                 : new AuthenticationHeaderValue("Bearer", token);
-        }
-
-        private static List<UsuarioDto> AplicarFiltro(List<UsuarioDto> usuarios, string filtro)
-        {
-            string filtroLimpio = FiltroHelper.LimpiarFiltro(filtro);
-            if (string.IsNullOrWhiteSpace(filtroLimpio))
-                return usuarios;
-
-            string[] partes = FiltroHelper.ObtenerPartes(filtroLimpio);
-
-            return usuarios
-                .Where(usuario => partes.All(parte => CoincideParte(usuario, parte)))
-                .ToList();
-        }
-
-        private static bool CoincideParte(UsuarioDto usuario, string parte)
-        {
-            return Contiene(usuario.Nombres, parte)
-                || Contiene(usuario.ApellidoPaterno, parte)
-                || Contiene(usuario.ApellidoMaterno, parte)
-                || Contiene(usuario.Ci, parte)
-                || Contiene(usuario.Email, parte)
-                || Contiene(usuario.UserName, parte)
-                || Contiene(usuario.Role, parte);
-        }
-
-        private static bool Contiene(string? texto, string parte)
-        {
-            return !string.IsNullOrWhiteSpace(texto)
-                && texto.Contains(parte, StringComparison.OrdinalIgnoreCase);
         }
 
         private async Task<OperacionApiDto> LeerResultadoAsync(HttpResponseMessage response, string mensajeExito)

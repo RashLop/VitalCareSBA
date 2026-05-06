@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace FrontendVitalCare.Dto.Auth
 {
@@ -30,9 +31,11 @@ namespace FrontendVitalCare.Dto.Auth
         public string? Role { get; set; } = string.Empty;
 
         [JsonIgnore]
+        [ValidateNever]
         public string UserName { get; set; } = string.Empty;
 
         [JsonIgnore]
+        [ValidateNever]
         public string Password { get; set; } = string.Empty;
     }
 }

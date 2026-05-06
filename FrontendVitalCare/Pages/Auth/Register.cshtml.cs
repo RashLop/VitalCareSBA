@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FrontendVitalCare.Dto.Auth;
 using FrontendVitalCare.Dto;
+using FrontendVitalCare.Helpers;
 using FrontendVitalCare.Servicios;
 
 namespace FrontendVitalCare.Pages.Auth
@@ -28,6 +29,15 @@ namespace FrontendVitalCare.Pages.Auth
 
         public async Task<IActionResult> OnPostAsync()
         {
+            Registro.UserName = CredencialesHelper.GenerarUserName(
+                Registro.Nombres,
+                Registro.ApellidoPaterno,
+                Registro.Ci
+            );
+
+            ModelState.Remove("Registro.UserName");
+            ModelState.Remove("Registro.Password");
+
             if (!ModelState.IsValid)
             {
                 MensajeError = ModelState.Values
@@ -46,9 +56,7 @@ namespace FrontendVitalCare.Pages.Auth
                 return Page();
             }
 
-            MensajeOk = resultado.Mensaje;
-            ModelState.Clear();
-            Registro = new UsuarioRegistroDto();
+            MensajeOk = "Usuario registrado correctamente. Revisa las credenciales generadas y tu correo electronico.";
             return Page();
         }
     }

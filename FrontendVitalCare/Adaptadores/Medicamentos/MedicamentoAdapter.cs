@@ -35,5 +35,10 @@ namespace FrontendVitalCare.Adaptadores
         {
             return _adapter.DeleteAsync($"api/medicamentos/{id}");
         }
+
+        public Task<bool> DeleteAsync(int id, int idUsuario)
+        {
+            return _adapter.DeleteAsync($"api/medicamentos/{id}?idUsuario={idUsuario}");
+        }
     }
 }

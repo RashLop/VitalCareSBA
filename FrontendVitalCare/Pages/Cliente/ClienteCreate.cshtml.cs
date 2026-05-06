@@ -26,7 +26,14 @@ namespace FrontendVitalCare.Pages
 
         public async Task<IActionResult> OnPostCrearClienteAsync()
         {
-            Cliente.IdUsuario = 1;
+            int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+            if (idUsuario == null || idUsuario == 0)
+            {
+                MensajeError = "No se encontró el usuario. Por favor, inicia sesión nuevamente.";
+                return Page();
+            }
+
+            Cliente.IdUsuario = idUsuario.Value;
 
             OperacionApiDto resultado = await clienteApiAdapter.CrearAsync(Cliente);
 

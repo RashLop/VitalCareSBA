@@ -3,6 +3,7 @@ using FrontendVitalCare.Dto.ClasificacionDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FrontendVitalCare.Adaptadores;
+using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {
@@ -29,7 +30,7 @@ namespace FrontendVitalCare.Pages.Medicamento
         public string Presentacion { get; set; } = string.Empty;
 
         [BindProperty]
-        public int Clasificacion { get; set; }
+        public int IdClasificacion { get; set; }
 
         [BindProperty]
         public string Concentracion { get; set; } = string.Empty;
@@ -64,7 +65,7 @@ namespace FrontendVitalCare.Pages.Medicamento
                 Id = Medicamento.Id;
                 Nombre = Medicamento.Nombre;
                 Presentacion = Medicamento.Presentacion;
-                Clasificacion = Medicamento.Clasificacion;
+                IdClasificacion = Medicamento.IdClasificacion;
                 Concentracion = Medicamento.Concentracion;
                 Precio = Medicamento.Precio;
                 Stock = Medicamento.Stock;
@@ -89,15 +90,24 @@ namespace FrontendVitalCare.Pages.Medicamento
                     return Page();
                 }
 
+                int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+                if (idUsuario == null || idUsuario == 0)
+                {
+                    MensajeError = "No se encontró el usuario. Por favor, inicia sesión nuevamente.";
+                    Medicamento = await _medicamentoAdapter.GetByIdAsync(Id);
+                    return Page();
+                }
+
                 var medicamentoActualizado = new MedicamentoDto
                 {
                     Id = Id,
                     Nombre = Nombre,
                     Presentacion = Presentacion,
-                    Clasificacion = Clasificacion,
+                    IdClasificacion = IdClasificacion,
                     Concentracion = Concentracion,
                     Precio = Precio,
-                    Stock = Stock
+                    Stock = Stock,
+                    IdUsuario = idUsuario.Value
                 };
 
                 bool exito = await _medicamentoAdapter.UpdateAsync(medicamentoActualizado);

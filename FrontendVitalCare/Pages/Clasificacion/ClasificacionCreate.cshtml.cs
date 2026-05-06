@@ -41,14 +41,22 @@ namespace FrontendVitalCare.Pages.Clasificacion
                     return Page();
                 }
 
+                int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+                if (idUsuario == null || idUsuario == 0)
+                {
+                    MensajeError = "No se encontró el usuario. Por favor, inicia sesión nuevamente.";
+                    return Page();
+                }
+
                 var nuevaClasificacion = new ClasificacionDto
                 {
                     Nombre = Nombre,
                     Origen = Origen,
-                    Descripcion = Descripcion
+                    Descripcion = Descripcion,
+                    IdUsuario = idUsuario.Value
                 };
 
-                bool exito = await _clasificacionAdapter.CreateAsync(nuevaClasificacion);
+                var (exito, mensaje) = await _clasificacionAdapter.CreateAsync(nuevaClasificacion);
 
                 if (exito)
                 {
@@ -56,7 +64,7 @@ namespace FrontendVitalCare.Pages.Clasificacion
                 }
                 else
                 {
-                    MensajeError = "Error al crear la clasificación.";
+                    MensajeError = mensaje ?? "Error al crear la clasificación.";
                     return Page();
                 }
             }

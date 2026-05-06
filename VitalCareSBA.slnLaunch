@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "VitalCare",
+    "Projects": [
+      {
+        "Path": "ServicioUsuarios\\ServicioUsuarios.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ServicioVentas\\ServicioVentas.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "FrontendVitalCare\\FrontendVitalCare.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

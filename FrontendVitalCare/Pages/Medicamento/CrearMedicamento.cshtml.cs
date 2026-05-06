@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using FrontendVitalCare.Services;
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using System.Data;
+using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {
     public class CrearMedicamento : PageModel
     {
-        private readonly MedicamentoClient _medicamentoClient;
+        private readonly AdapterJSON<MedicamentoDto> _medicamentoClient;
 
-        public CrearMedicamento(MedicamentoClient medicamentoClient)
+        public CrearMedicamento(AdapterJSON<MedicamentoDto> medicamentoClient)
         {
             _medicamentoClient = medicamentoClient;
         }
@@ -23,15 +23,11 @@ namespace FrontendVitalCare.Pages.Medicamento
 
         [TempData]
         public string MensajeError { get; set; } = string.Empty;
-        public DataTable ClasificacionDataTable { get; set; } = new DataTable();
 
         public void OnGet()
         {
-            // TODO: cargar tu DataTable de clasificaciones
-            // ClasificacionDataTable = _clasificacionClient.ObtenerTodos();
         }
 
-        // Handler para crear medicamento
         public async Task<IActionResult> OnPostCrearMedicamentoAsync()
         {
             if (!ModelState.IsValid)
@@ -42,7 +38,7 @@ namespace FrontendVitalCare.Pages.Medicamento
 
             try
             {
-                bool exito = await _medicamentoClient.CrearAsync(Medicamento);
+                bool exito = await _medicamentoClient.PostAsync("api/medicamentos", Medicamento);
 
                 if (exito)
                 {

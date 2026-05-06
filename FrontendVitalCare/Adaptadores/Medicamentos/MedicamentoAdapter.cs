@@ -1,24 +1,39 @@
-using System.Text.Json;
 using FrontendVitalCare.Dto.MedicamentoDtos;
-using FrontendVitalCare.Adaptadores;
 
-public class MedicamentoAdapter : IAdapter<JsonElement, MedicamentoDto>
+namespace VitalCareSBA.FrontendVitalCare.Adaptadores
 {
-    public MedicamentoDto Adapt(JsonElement origen)
+    public class MedicamentoAdapter
     {
-        return new MedicamentoDto
-        {
-            Id = origen.GetProperty("id").GetInt32(),
-            Nombre = origen.GetProperty("nombre").GetString() ?? string.Empty,
-            Presentacion = origen.GetProperty("presentacion").GetString() ?? string.Empty,
-            Clasificacion = origen.GetProperty("idClasificacion").GetInt32().ToString(), // CORREGIDO
-            Precio = origen.GetProperty("precio").GetDecimal(),
-            Stock = origen.GetProperty("stock").GetInt32()
-        };
-    }
+        private readonly IAdapter<MedicamentoDto> _adapter;
 
-    public List<MedicamentoDto> AdaptList(IEnumerable<JsonElement> origen)
-    {
-        return origen.Select(Adapt).ToList();
+        public MedicamentoAdapter(IAdapter<MedicamentoDto> adapter)
+        {
+            _adapter = adapter;
+        }
+
+        public Task<List<MedicamentoDto>> GetAllAsync()
+        {
+            return _adapter.GetListAsync($"api/medicamentos");
+        }
+
+        public Task<MedicamentoDto?> GetByIdAsync(int id)
+        {
+            return _adapter.GetAsync($"api/medicamentos/{id}");
+        }
+
+        public Task<bool> CreateAsync(MedicamentoDto medicamento)
+        {
+            return _adapter.PostAsync($"api/medicamentos", medicamento);
+        }
+
+        public Task<bool> UpdateAsync(MedicamentoDto medicamento)
+        {
+            return _adapter.PutAsync($"api/medicamentos/{medicamento.Id}", medicamento);
+        }
+
+        public Task<bool> DeleteAsync(int id)
+        {
+            return _adapter.DeleteAsync($"api/medicamentos/{id}");
+        }
     }
 }

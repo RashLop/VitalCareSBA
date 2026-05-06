@@ -23,7 +23,7 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Validadores
             if (nombre.Length < 3 || nombre.Length > 45)
                 return Result.Fail("El nombre debe tener entre 3 y 45 caracteres.");
 
-            string patron = @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$";
+            string patron = @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]+$";
             if (!Regex.IsMatch(nombre, patron))
                 return Result.Fail("El nombre contiene caracteres inválidos.");
 
@@ -43,7 +43,7 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Validadores
             if (origen.Length < 3 || origen.Length > 45)
                 return Result.Fail("El origen debe tener entre 3 y 45 caracteres.");
 
-            string patron = @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$";
+            string patron = @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]+$";
             if (!Regex.IsMatch(origen, patron))
                 return Result.Fail("El origen contiene caracteres inválidos.");
 

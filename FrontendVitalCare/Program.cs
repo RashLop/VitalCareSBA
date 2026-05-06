@@ -8,6 +8,7 @@ using FrontendVitalCare.Dto.VentasDtos;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using FrontendVitalCare.Services;
 using FrontendVitalCare.Servicios;
+using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.

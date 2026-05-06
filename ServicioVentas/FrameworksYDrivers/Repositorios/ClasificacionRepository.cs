@@ -120,7 +120,8 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios
                 Id = Convert.ToInt32(reader["id"]),
                 Nombre = StringHelper.LimpiarEspacios(reader["nombre"].ToString()),
                 Origen = StringHelper.LimpiarEspacios(reader["origen"].ToString()),
-                Descripcion = StringHelper.LimpiarEspacios(reader["descripcion"].ToString())
+                Descripcion = StringHelper.LimpiarEspacios(reader["descripcion"].ToString()),
+                IdUsuario = Convert.ToInt32(reader["id_usuario"])
             };
         }
 
@@ -133,7 +134,8 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios
                                     descripcion,
                                     estado,
                                     fecha_registro,
-                                    ultima_actualizacion
+                                    ultima_actualizacion,
+                                    id_usuario
                              FROM clasificacion
                              WHERE id = @id";
 
@@ -158,7 +160,8 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios
                             FechaRegistro = Convert.ToDateTime(reader["fecha_registro"]),
                             UltimaActualizacion = reader["ultima_actualizacion"] == DBNull.Value
                                 ? null
-                                : Convert.ToDateTime(reader["ultima_actualizacion"])
+                                : Convert.ToDateTime(reader["ultima_actualizacion"]),
+                            IdUsuario = Convert.ToInt32(reader["id_usuario"])
                         };
                     }
                 }
@@ -191,7 +194,8 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios
             string query = @"SELECT id,
                                     nombre,
                                     origen,
-                                    descripcion
+                                    descripcion,
+                                    id_usuario
                              FROM clasificacion
                              WHERE estado = 1";
 

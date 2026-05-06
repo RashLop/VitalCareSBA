@@ -38,7 +38,13 @@ namespace FrontendVitalCare.Pages
 
         public async Task<IActionResult> OnPostEliminarClienteLogicamenteAsync(int id)
         {
-            OperacionApiDto resultado = await clienteApiAdapter.EliminarAsync(id, idUsuario: 1);
+            int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+            if (idUsuario == null || idUsuario == 0)
+            {
+                return RedirectToPage("Cliente", new { error = "No se encontró el usuario. Por favor, inicia sesión nuevamente." });
+            }
+
+            OperacionApiDto resultado = await clienteApiAdapter.EliminarAsync(id, idUsuario: idUsuario.Value);
 
             if (!resultado.Exito)
                 return RedirectToPage("Cliente", new { error = resultado.Mensaje });

@@ -1,5 +1,5 @@
 @page
-@model FrontendVitalCare.Pages.ClasificacionModel
+@model FrontendVitalCare.Pages.Clasificacion.ClasificacionModel
 @{
 }
 
@@ -8,32 +8,46 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-success">Clasificaciones</h2>
 
-        <a href="/Clasificacion/ClasificacionCreate" class="btn btn-primary">
+        <a asp-page="ClasificacionCreate" class="btn btn-primary">
             + Nueva Clasificación
         </a>
     </div>
 
     <!-- BUSCADOR -->
-    <div class="card-module p-3 mb-4">
-        <div class="input-group">
-            <input type="text"
-                   id="filtro"
-                   class="form-control"
-                   placeholder="Buscar..." />
+    <form method="get" class="mb-4">
+        <div class="card-module p-3">
+            <div class="input-group">
+                <input type="text"
+                       name="filtro"
+                       class="form-control"
+                       placeholder="Buscar..." />
 
-            <button class="btn btn-success" onclick="cargarClasificaciones()">
-                Buscar
-            </button>
+                <button type="submit" class="btn btn-success btn-fixed">
+                    Buscar
+                </button>
 
-            <button class="btn btn-secondary" onclick="limpiar()">
-                Limpiar
-            </button>
+                <a asp-page="Clasificacion" class="btn btn-secondary btn-fixed">
+                    Limpiar
+                </a>
+            </div>
         </div>
-    </div>
+    </form>
 
     <!-- MENSAJES -->
-    <div id="mensajeOk" class="alert alert-success d-none"></div>
-    <div id="mensajeError" class="alert alert-danger d-none"></div>
+    @if (!string.IsNullOrEmpty(Model.Mensaje))
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            @Model.Mensaje
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.MensajeError))
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            @Model.MensajeError
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
 
     <!-- TABLA -->
     <div class="card-module">
@@ -47,19 +61,43 @@
                 </tr>
             </thead>
 
-            <tbody id="tablaClasificaciones"></tbody>
+            <tbody>
+                @foreach (var c in Model.Clasificaciones)
+                {
+                    <tr>
+                        <td class="fw-semibold">@c.Nombre</td>
+                        <td>@c.Origen</td>
+                        <td>@c.Descripcion</td>
+                        <td>
+                            <a asp-page="ClasificacionUpdate" asp-route-id="@c.Id" class="btn btn-warning btn-sm">
+                                Editar
+                            </a>
+
+                            <button type="button"
+                                    class="btn btn-danger btn-sm btnEliminar"
+                                    data-id="@c.Id"
+                                    data-nombre="@c.Nombre"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEliminar">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
         </table>
     </div>
 
 </div>
 
 <!-- MODAL ELIMINAR -->
-<div class="modal fade" id="modalEliminar" tabindex="-1">
+<div class="modal fade" id="modalEliminar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow">
 
             <div class="modal-header bg-success text-white">
-                <h5>Confirmar eliminación</h5>
+                <h5 class="modal-title">Confirmar eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
@@ -69,98 +107,28 @@
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-danger" onclick="confirmarEliminar()">Eliminar</button>
+                <form method="post" asp-page-handler="Eliminar" style="display:inline;">
+                    <input type="hidden" id="idEliminar" name="id" />
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
             </div>
 
         </div>
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        let idEliminar = null;
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const botonesEliminar = document.querySelectorAll(".btnEliminar");
 
-        // 🔄 GET
-        async function cargarClasificaciones() {
-            const filtro = document.getElementById("filtro").value;
+        botonesEliminar.forEach(boton => {
+            boton.addEventListener("click", function () {
+                const id = this.getAttribute("data-id");
+                const nombre = this.getAttribute("data-nombre");
 
-            const res = await ClasificacionAdapter.obtenerTodos(filtro);
-
-            if (!res.ok) {
-                mostrarError("Error al cargar");
-                return;
-            }
-
-            const data = res.data;
-
-            const tabla = document.getElementById("tablaClasificaciones");
-            tabla.innerHTML = "";
-
-            data.forEach(c => {
-                tabla.innerHTML += `
-                    <tr>
-                        <td>${c.nombre}</td>
-                        <td>${c.origen}</td>
-                        <td>${c.descripcion}</td>
-                        <td>
-                            <a href="/Clasificacion/ClasificacionUpdate?id=${c.id}"
-                               class="btn btn-warning btn-sm">
-                                Editar
-                            </a>
-
-                            <button class="btn btn-danger btn-sm"
-                                onclick="abrirModal(${c.id}, '${c.nombre}')">
-                                Eliminar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                document.getElementById("idEliminar").value = id;
+                document.getElementById("nombreEliminar").textContent = nombre;
             });
-        }
-
-        // 🧹 limpiar
-        function limpiar() {
-            document.getElementById("filtro").value = "";
-            cargarClasificaciones();
-        }
-
-        // 🗑️ modal
-        function abrirModal(id, nombre) {
-            idEliminar = id;
-            document.getElementById("nombreEliminar").innerText = nombre;
-
-            const modal = new bootstrap.Modal(document.getElementById('modalEliminar'));
-            modal.show();
-        }
-
-        // ❌ DELETE (usando adapter)
-        async function confirmarEliminar() {
-            const res = await ClasificacionAdapter.eliminar(idEliminar);
-
-            if (res.ok) {
-                mostrarOk("Eliminado correctamente");
-                cargarClasificaciones();
-            } else {
-                mostrarError("Error al eliminar");
-            }
-
-            bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
-        }
-
-        // 📢 mensajes
-        function mostrarOk(msg) {
-            const div = document.getElementById("mensajeOk");
-            div.innerText = msg;
-            div.classList.remove("d-none");
-        }
-
-        function mostrarError(msg) {
-            const div = document.getElementById("mensajeError");
-            div.innerText = msg;
-            div.classList.remove("d-none");
-        }
-
-        // 🚀 auto load
-        cargarClasificaciones();
-    </script>
-}
+        });
+    });
+</script>

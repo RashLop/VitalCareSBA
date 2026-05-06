@@ -43,7 +43,10 @@
                         <div class="form-floating mb-3">
                             <select asp-for="Medicamento.Clasificacion" class="form-select med-input" required>
                                 <option value="" selected disabled>Seleccione una clasificación</option>
-
+                                @foreach (var clasificacion in Model.Clasificaciones)
+                                {
+                                    <option value="@clasificacion.Id">@clasificacion.Nombre</option>
+                                }
                             </select>
                             <label class="ms-2">Clasificación</label>
                         </div>

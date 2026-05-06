@@ -1,4 +1,5 @@
 using FrontendVitalCare.Dto.MedicamentoDtos;
+using FrontendVitalCare.Dto.ClasificacionDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FrontendVitalCare.Adaptadores;
@@ -8,10 +9,12 @@ namespace FrontendVitalCare.Pages.Medicamento
     public class ActualizarMedicamentoModel : PageModel
     {
         private readonly MedicamentoAdapter _medicamentoAdapter;
+        private readonly ClasificacionAdapter _clasificacionAdapter;
 
-        public ActualizarMedicamentoModel(MedicamentoAdapter medicamentoAdapter)
+        public ActualizarMedicamentoModel(MedicamentoAdapter medicamentoAdapter, ClasificacionAdapter clasificacionAdapter)
         {
             _medicamentoAdapter = medicamentoAdapter;
+            _clasificacionAdapter = clasificacionAdapter;
         }
 
         public MedicamentoDto? Medicamento { get; set; }
@@ -26,7 +29,7 @@ namespace FrontendVitalCare.Pages.Medicamento
         public string Presentacion { get; set; } = string.Empty;
 
         [BindProperty]
-        public string Clasificacion { get; set; } = string.Empty;
+        public int Clasificacion { get; set; }
 
         [BindProperty]
         public string Concentracion { get; set; } = string.Empty;
@@ -37,6 +40,8 @@ namespace FrontendVitalCare.Pages.Medicamento
         [BindProperty]
         public int Stock { get; set; }
 
+        public List<ClasificacionDto> Clasificaciones { get; set; } = new();
+
         [TempData]
         public string? MensajeError { get; set; }
 
@@ -45,6 +50,9 @@ namespace FrontendVitalCare.Pages.Medicamento
         {
             try
             {
+                // Cargar clasificaciones
+                Clasificaciones = await _clasificacionAdapter.GetAllAsync();
+
                 Medicamento = await _medicamentoAdapter.GetByIdAsync(id);
 
                 if (Medicamento == null)

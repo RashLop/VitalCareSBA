@@ -5,6 +5,7 @@ using FrontendVitalCare.Dto;
 using FrontendVitalCare.Dto.Auth;
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using FrontendVitalCare.Dto.VentasDtos;
+using FrontendVitalCare.Dto.ClasificacionDtos;
 using FrontendVitalCare.Services;
 using FrontendVitalCare.Servicios;
 
@@ -62,6 +63,19 @@ builder.Services.AddHttpClient<AdapterJSON<VentaDto>>(client =>
 
 // Registrar VentaClient
 builder.Services.AddScoped<VentaClient>();
+
+// Registrar AdapterJSON para Clasificaciones
+builder.Services.AddHttpClient<AdapterJSON<ClasificacionDto>>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiUrls:ServicioVentas"] ?? throw new InvalidOperationException("ApiUrls:ServicioVentas missing"));
+});
+
+// Registrar ClasificacionAdapter
+builder.Services.AddScoped<ClasificacionAdapter>(sp =>
+{
+    var adapterJson = sp.GetRequiredService<AdapterJSON<ClasificacionDto>>();
+    return new ClasificacionAdapter(adapterJson);
+});
 
 var app = builder.Build();
 

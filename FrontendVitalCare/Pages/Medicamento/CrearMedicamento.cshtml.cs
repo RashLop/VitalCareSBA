@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FrontendVitalCare.Dto.MedicamentoDtos;
+using FrontendVitalCare.Dto.ClasificacionDtos;
 using System.Data;
 using FrontendVitalCare.Adaptadores;
 
@@ -9,14 +10,18 @@ namespace FrontendVitalCare.Pages.Medicamento
     public class CrearMedicamento : PageModel
     {
         private readonly AdapterJSON<MedicamentoDto> _medicamentoClient;
+        private readonly ClasificacionAdapter _clasificacionAdapter;
 
-        public CrearMedicamento(AdapterJSON<MedicamentoDto> medicamentoClient)
+        public CrearMedicamento(AdapterJSON<MedicamentoDto> medicamentoClient, ClasificacionAdapter clasificacionAdapter)
         {
             _medicamentoClient = medicamentoClient;
+            _clasificacionAdapter = clasificacionAdapter;
         }
 
         [BindProperty]
         public MedicamentoDto Medicamento { get; set; } = new MedicamentoDto();
+
+        public List<ClasificacionDto> Clasificaciones { get; set; } = new();
 
         [TempData]
         public string Mensaje { get; set; } = string.Empty;
@@ -24,8 +29,9 @@ namespace FrontendVitalCare.Pages.Medicamento
         [TempData]
         public string MensajeError { get; set; } = string.Empty;
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
+            Clasificaciones = await _clasificacionAdapter.GetAllAsync();
         }
 
         public async Task<IActionResult> OnPostCrearMedicamentoAsync()

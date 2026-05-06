@@ -38,7 +38,13 @@
                             </div>
 
                             <div class="form-floating mb-3">
-                                <input asp-for="Clasificacion" class="form-control med-input" placeholder="Clasificación" required />
+                                <select asp-for="Clasificacion" class="form-select med-input" required>
+                                    <option value="">Seleccione clasificación</option>
+                                    @foreach (var clasificacion in Model.Clasificaciones)
+                                    {
+                                        <option value="@clasificacion.Id" selected="@(Model.Clasificacion == clasificacion.Id)">@clasificacion.Nombre</option>
+                                    }
+                                </select>
                                 <label class="ms-2">Clasificación</label>
                             </div>
 

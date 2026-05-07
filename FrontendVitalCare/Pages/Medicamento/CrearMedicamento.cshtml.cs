@@ -4,7 +4,6 @@ using FrontendVitalCare.Dto.MedicamentoDtos;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using System.Data;
 using FrontendVitalCare.Adaptadores;
-using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {

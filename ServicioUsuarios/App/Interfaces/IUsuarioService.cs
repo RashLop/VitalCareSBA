@@ -15,5 +15,8 @@ namespace ServicioUsuarios.App.Interfaces
         IEnumerable<UsuarioDto> ObtenerTodos(string filtro);
         Result ValidarActivacionCuenta(string token);
         Result ActivarCuenta(string token, string nuevaPassword);
+        Result SolicitarRecuperacionContrasena(string email);
+        Result ValidarRecuperacionContrasena(string token);
+        Result ConfirmarRecuperacionContrasena(string token, string nuevaPassword);
     }
 }

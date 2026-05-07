@@ -79,6 +79,33 @@ namespace FrontendVitalCare.Servicios
             return await LeerResultadoAsync(response, "Sesion cerrada correctamente.");
         }
 
+        public async Task<OperacionApiDto> SolicitarRecuperacionAsync(SolicitarRecuperacionDto request)
+        {
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/auth/solicitar-recuperacion-contrasena", request);
+            return await LeerResultadoAsync(response, "Se ha enviado un enlace a tu correo.");
+        }
+
+        public async Task<OperacionApiDto> ValidarRecuperacionAsync(string token)
+        {
+            string url = $"api/auth/validar-recuperacion-contrasena?token={Uri.EscapeDataString(token)}";
+            HttpResponseMessage response = await _httpClient.GetAsync(url);
+            return await LeerResultadoAsync(response, "Token valido.");
+        }
+
+        public async Task<OperacionApiDto> ConfirmarRecuperacionAsync(RecuperarContrasenaRequestDto request)
+        {
+            Dictionary<string, string> datos = new Dictionary<string, string>
+            {
+                ["token"] = request.Token,
+                ["nuevaPassword"] = request.NuevaPassword,
+                ["confirmarPassword"] = request.ConfirmarPassword
+            };
+
+            using FormUrlEncodedContent content = new FormUrlEncodedContent(datos);
+            HttpResponseMessage response = await _httpClient.PostAsync("api/auth/confirmar-recuperacion-contrasena", content);
+            return await LeerResultadoAsync(response, "Contraseña actualizada correctamente.");
+        }
+
         private async Task<OperacionApiDto> LeerResultadoAsync(HttpResponseMessage response, string mensajeExito)
         {
             string mensaje = await LeerMensajeAsync(response, mensajeExito);

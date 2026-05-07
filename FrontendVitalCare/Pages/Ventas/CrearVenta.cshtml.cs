@@ -106,15 +106,20 @@ namespace FrontendVitalCare.Pages.Ventas
                 {
                     var detallesInput = JsonSerializer.Deserialize<List<DetalleVentaInputDto>>(DetallesJson) ?? new();
                     
-                    detalles = detallesInput
-                        .Where(x => x.IdMedicamento > 0 && x.Cantidad > 0)
-                        .Select(x => new DetalleVentaDto
+                    detalles = new List<DetalleVentaDto>();
+
+                    foreach (var item in detallesInput.Where(x => x.IdMedicamento > 0 && x.Cantidad > 0))
+                    {
+                        var medicamento = await _medicamentoAdapter.GetByIdAsync(item.IdMedicamento);
+
+                        detalles.Add(new DetalleVentaDto
                         {
-                            IdMedicamento = x.IdMedicamento,
-                            Cantidad = x.Cantidad,
-                            PrecioUnitario = 0 // Se calcularán en el backend
-                        })
-                        .ToList();
+                            IdMedicamento = item.IdMedicamento,
+                            Cantidad = item.Cantidad,
+                            PrecioUnitario = medicamento?.Precio ?? 0,
+                            NombreMedicamento = medicamento?.Nombre ?? $"Medicamento #{item.IdMedicamento}"
+                        });
+                    }
 
                     if (!detalles.Any())
                     {
@@ -160,9 +165,15 @@ namespace FrontendVitalCare.Pages.Ventas
                             .FirstOrDefault(c => c.IdCliente == IdCliente);
                     }
 
+                    var ventas = await _ventaClient.ObtenerTodosAsync("");
+                    var ventaCreada = ventas
+                        .Where(v => v.IdCliente == IdCliente && v.MetodoPago == MetodoPago)
+                        .OrderByDescending(v => v.Id)
+                        .FirstOrDefault();
+
                     var comprobante = new ComprobanteVentaPdfDto
                     {
-                        Fecha = DateTime.Now,
+                        Fecha = ventaCreada?.FechaHora ?? DateTime.Now,
                         Nit = cliente?.Nit ?? "N/A",
                         RazonSocial = cliente?.RazonSocial ?? "Cliente",
                         Cajero = HttpContext.Session.GetString("UserName") ?? "cajero"
@@ -170,14 +181,11 @@ namespace FrontendVitalCare.Pages.Ventas
 
                     foreach (var item in detalles)
                     {
-                        var medicamento = Medicamentos
-                            .FirstOrDefault(m => m.Id == item.IdMedicamento);
-
                         comprobante.Detalles.Add(new ComprobanteVentaDetallePdfDto
                         {
                             Cantidad = item.Cantidad,
-                            Descripcion = medicamento?.Nombre ?? "Medicamento",
-                            PrecioUnitario = medicamento?.Precio ?? 0
+                            Descripcion = item.NombreMedicamento,
+                            PrecioUnitario = item.PrecioUnitario
                         });
                     }
 

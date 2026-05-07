@@ -4,6 +4,8 @@ namespace ServicioUsuarios.Dominio.Validadores
 {
     public abstract class UsuarioValidacionBase
     {
+        protected const string PatronSoloLetrasYEspacios = @"^[A-Za-zÀ-ÖØ-öø-ÿ ]+$";
+
         protected static readonly HashSet<string> ExtensionesValidas = new(StringComparer.OrdinalIgnoreCase)
         {
             "LP", "CB", "SC", "OR", "PT", "TJ", "CH", "BE", "PD"
@@ -55,6 +57,28 @@ namespace ServicioUsuarios.Dominio.Validadores
                 return null;
 
             return Maximo(valor, maximo, $"El campo {campo} no puede tener mas de {maximo} caracteres.");
+        }
+
+        protected static Result? TextoSoloLetrasRequerido(string? valor, string campo, int maximo)
+        {
+            valor = valor?.Trim();
+
+            if (string.IsNullOrWhiteSpace(valor))
+                return Result.Fail($"El campo {campo} es obligatorio.");
+
+            return Maximo(valor, maximo, $"El campo {campo} no puede tener mas de {maximo} caracteres.")
+                ?? RegexValido(valor, PatronSoloLetrasYEspacios, $"El campo {campo} solo puede contener letras y espacios.");
+        }
+
+        protected static Result? TextoSoloLetrasOpcional(string? valor, string campo, int maximo)
+        {
+            valor = valor?.Trim();
+
+            if (string.IsNullOrWhiteSpace(valor))
+                return null;
+
+            return Maximo(valor, maximo, $"El campo {campo} no puede tener mas de {maximo} caracteres.")
+                ?? RegexValido(valor, PatronSoloLetrasYEspacios, $"El campo {campo} solo puede contener letras y espacios.");
         }
     }
 }

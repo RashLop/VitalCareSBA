@@ -28,7 +28,7 @@ namespace ServicioUsuarios.Dominio.Validadores
             string? userName = LimpiarTexto(dto.UserName);
             string? password = LimpiarTexto(dto.Password);
 
-            Result? resultado = ValidarCamposObligatorios(nombres, apellidoPaterno, email)
+            Result? resultado = ValidarCamposObligatorios(nombres, apellidoPaterno, apellidoMaterno, email)
                 ?? ValidarCi(ci)
                 ?? ValidarTelefono(telefono)
                 ?? ValidarEmail(email)
@@ -54,7 +54,7 @@ namespace ServicioUsuarios.Dominio.Validadores
             string? telefono = LimpiarTexto(dto.Telefono);
             string? email = LimpiarTexto(dto.Email);
 
-            Result? resultado = ValidarCamposObligatorios(nombres, apellidoPaterno, email)
+            Result? resultado = ValidarCamposObligatorios(nombres, apellidoPaterno, apellidoMaterno, email)
                 ?? ValidarCi(ci)
                 ?? ValidarTelefono(telefono)
                 ?? ValidarEmail(email);
@@ -74,22 +74,17 @@ namespace ServicioUsuarios.Dominio.Validadores
             return Result.Ok();
         }
 
-        private Result? ValidarCamposObligatorios(string? nombres, string? apellidoPaterno, string? email)
+        private Result? ValidarCamposObligatorios(string? nombres, string? apellidoPaterno, string? apellidoMaterno, string? email)
         {
-            if (string.IsNullOrWhiteSpace(nombres))
-                return Result.Fail("El campo Nombres es obligatorio.");
+            Result? resultado = TextoSoloLetrasRequerido(nombres, "Nombres", 100)
+                ?? TextoSoloLetrasRequerido(apellidoPaterno, "Apellido Paterno", 100)
+                ?? TextoSoloLetrasOpcional(apellidoMaterno, "Apellido Materno", 100);
 
-            if (string.IsNullOrWhiteSpace(apellidoPaterno))
-                return Result.Fail("El campo Apellido Paterno es obligatorio.");
+            if (resultado != null)
+                return resultado;
 
             if (string.IsNullOrWhiteSpace(email))
                 return Result.Fail("El campo Email es obligatorio.");
-
-            if (nombres!.Length > 100)
-                return Result.Fail("El campo Nombres no puede exceder 100 caracteres.");
-
-            if (apellidoPaterno!.Length > 100)
-                return Result.Fail("El campo Apellido Paterno no puede exceder 100 caracteres.");
 
             return null;
         }

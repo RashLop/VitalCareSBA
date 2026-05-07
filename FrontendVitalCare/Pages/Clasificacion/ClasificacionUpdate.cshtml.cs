@@ -76,15 +76,24 @@ namespace FrontendVitalCare.Pages.Clasificacion
                     return Page();
                 }
 
+                int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+                if (idUsuario == null || idUsuario == 0)
+                {
+                    MensajeError = "No se encontró el usuario. Por favor, inicia sesión nuevamente.";
+                    Clasificacion = await _clasificacionAdapter.GetByIdAsync(Id);
+                    return Page();
+                }
+
                 var clasificacionActualizada = new ClasificacionDto
                 {
                     Id = Id,
                     Nombre = Nombre,
                     Origen = Origen,
-                    Descripcion = Descripcion
+                    Descripcion = Descripcion,
+                    IdUsuario = idUsuario.Value
                 };
 
-                bool exito = await _clasificacionAdapter.UpdateAsync(clasificacionActualizada);
+                var (exito, mensaje) = await _clasificacionAdapter.UpdateAsync(clasificacionActualizada);
 
                 if (exito)
                 {
@@ -92,7 +101,7 @@ namespace FrontendVitalCare.Pages.Clasificacion
                 }
                 else
                 {
-                    MensajeError = "Error al actualizar la clasificación.";
+                    MensajeError = mensaje ?? "Error al actualizar la clasificación.";
                     Clasificacion = await _clasificacionAdapter.GetByIdAsync(Id);
                     return Page();
                 }

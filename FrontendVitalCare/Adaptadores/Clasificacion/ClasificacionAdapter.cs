@@ -1,3 +1,4 @@
+using FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 
 namespace FrontendVitalCare.Adaptadores
@@ -21,14 +22,14 @@ namespace FrontendVitalCare.Adaptadores
             return _adapter.GetAsync($"api/clasificaciones/{id}");
         }
 
-        public Task<bool> CreateAsync(ClasificacionDto clasificacion)
+        public Task<(bool Success, string? Message)> CreateAsync(ClasificacionDto clasificacion)
         {
-            return _adapter.PostAsync("api/clasificaciones", clasificacion);
+            return _adapter.PostWithMessageAsync($"api/clasificaciones", clasificacion);
         }
 
-        public Task<bool> UpdateAsync(ClasificacionDto clasificacion)
+        public Task<(bool Success, string? Message)> UpdateAsync(ClasificacionDto clasificacion)
         {
-            return _adapter.PutAsync($"api/clasificaciones/{clasificacion.Id}", clasificacion);
+            return _adapter.PutWithMessageAsync($"api/clasificaciones/{clasificacion.Id}", clasificacion);
         }
 
         public Task<bool> DeleteAsync(int id)

@@ -4,6 +4,7 @@ using FrontendVitalCare.Dto.MedicamentoDtos;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using System.Data;
 using FrontendVitalCare.Adaptadores;
+using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {
@@ -44,6 +45,15 @@ namespace FrontendVitalCare.Pages.Medicamento
 
             try
             {
+                int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+                if (idUsuario == null || idUsuario == 0)
+                {
+                    MensajeError = "No se encontró el usuario. Por favor, inicia sesión nuevamente.";
+                    return Page();
+                }
+
+                Medicamento.IdUsuario = idUsuario.Value;
+
                 bool exito = await _medicamentoClient.PostAsync("api/medicamentos", Medicamento);
 
                 if (exito)

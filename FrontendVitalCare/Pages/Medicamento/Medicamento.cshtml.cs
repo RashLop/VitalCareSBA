@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Dto.ClasificacionDtos;
+using FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {
@@ -42,7 +43,7 @@ namespace FrontendVitalCare.Pages.Medicamento
                     Medicamentos = Medicamentos
                         .Where(m =>
                             (!string.IsNullOrEmpty(m.Nombre) && m.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase)) ||
-                            (Clasificaciones.Any(c => c.Id == m.Clasificacion) && Clasificaciones.First(c => c.Id == m.Clasificacion).Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase)) ||
+                            (Clasificaciones.Any(c => c.Id == m.IdClasificacion) && Clasificaciones.First(c => c.Id == m.IdClasificacion).Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase)) ||
                             (!string.IsNullOrEmpty(m.Presentacion) && m.Presentacion.Contains(filtro, StringComparison.OrdinalIgnoreCase))
                         )
                         .ToList();
@@ -59,7 +60,14 @@ namespace FrontendVitalCare.Pages.Medicamento
         {
             try
             {
-                bool exito = await _medicamentoAdapter.DeleteAsync(id);
+                int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+                if (idUsuario == null || idUsuario == 0)
+                {
+                    MensajeError = "No se encontró el usuario. Por favor, inicia sesión nuevamente.";
+                    return RedirectToPage();
+                }
+
+                bool exito = await _medicamentoAdapter.DeleteAsync(id, idUsuario.Value);
                 Mensaje = exito ? "Medicamento eliminado correctamente." : "Error al eliminar el medicamento.";
             }
             catch

@@ -39,7 +39,7 @@ namespace FrontendVitalCare.Servicios
             return (OperacionApiDto.Ok(reporte.Mensaje), reporte);
         }
 
-        public async Task<(OperacionApiDto Resultado, ReportePdfDescargaDto? Archivo)> DescargarPdfMensualAsync()
+        public async Task<(OperacionApiDto Resultado, ArchivoDescargaDto? Archivo)> DescargarPdfMensualAsync()
         {
             HttpResponseMessage response = await _httpClient.GetAsync("api/ventas/reporte-ventas-por-rol/pdf");
             if (!response.IsSuccessStatusCode)
@@ -55,11 +55,35 @@ namespace FrontendVitalCare.Servicios
             string nombreArchivo = LeerNombreArchivo(response.Content.Headers.ContentDisposition)
                 ?? $"reporte-ventas-por-rol-{DateTime.Now:yyyy-MM-dd-HHmmss}.pdf";
 
-            return (OperacionApiDto.Ok("PDF generado correctamente."), new ReportePdfDescargaDto
+            return (OperacionApiDto.Ok("PDF generado correctamente."), new ArchivoDescargaDto
             {
                 Contenido = contenido,
                 NombreArchivo = nombreArchivo,
                 TipoContenido = response.Content.Headers.ContentType?.MediaType ?? "application/pdf"
+            });
+        }
+
+        public async Task<(OperacionApiDto Resultado, ArchivoDescargaDto? Archivo)> DescargarExcelMensualAsync()
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync("api/ventas/reporte-ventas-por-rol/excel");
+            if (!response.IsSuccessStatusCode)
+            {
+                string mensajeError = await LeerMensajeAsync(response, "No se pudo descargar el Excel del reporte.");
+                return (OperacionApiDto.Error(mensajeError), null);
+            }
+
+            byte[] contenido = await response.Content.ReadAsByteArrayAsync();
+            if (contenido.Length == 0)
+                return (OperacionApiDto.Error("El servicio devolvio un archivo Excel vacio."), null);
+
+            string nombreArchivo = LeerNombreArchivo(response.Content.Headers.ContentDisposition)
+                ?? $"reporte-ventas-por-rol-{DateTime.Now:yyyy-MM-dd-HHmmss}.xls";
+
+            return (OperacionApiDto.Ok("Excel generado correctamente."), new ArchivoDescargaDto
+            {
+                Contenido = contenido,
+                NombreArchivo = nombreArchivo,
+                TipoContenido = response.Content.Headers.ContentType?.MediaType ?? "application/vnd.ms-excel"
             });
         }
 

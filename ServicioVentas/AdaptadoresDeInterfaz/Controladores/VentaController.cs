@@ -123,5 +123,24 @@ namespace VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Controladores
 
             return File(pdf, "application/pdf", nombreArchivo);
         }
+
+        [HttpGet("reporte-ventas-por-rol/excel")]
+        public IActionResult DescargarReporteVentasPorRolExcel()
+        {
+            DateTime hoy = DateTime.Now;
+            DateTime fechaInicio = new DateTime(hoy.Year, hoy.Month, 1);
+            DateTime fechaFin = fechaInicio.AddMonths(1).AddDays(-1);
+
+            var reporte = ventaFacade.ReporteVentasPorRol(fechaInicio, fechaFin).ToList();
+            byte[] excel = ReporteVentasPorRolExcel.Generar(fechaInicio, fechaFin, reporte);
+
+            string nombreArchivo = $"reporte-ventas-por-rol-{hoy:yyyy-MM-dd-HHmmss}.xls";
+
+            Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["Expires"] = "0";
+
+            return File(excel, "application/vnd.ms-excel", nombreArchivo);
+        }
     }
 }

@@ -7,8 +7,12 @@ using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Creadores;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas;
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure QuestPDF
+QuestPDF.Settings.License = LicenseType.Community;
 
 // Add services to the container.
 

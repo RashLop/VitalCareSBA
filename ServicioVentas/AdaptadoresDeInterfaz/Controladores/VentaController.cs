@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Reportes;
 
 namespace VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Controladores
 {
@@ -102,6 +103,22 @@ namespace VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Controladores
                 hasta = fechaFin.ToString("dd/MM/yyyy"),
                 data = reporte
             });
+        }
+
+        [HttpGet("reporte-ventas-por-rol/pdf")]
+        public IActionResult DescargarReporteVentasPorRolPdf()
+        {
+            DateTime hoy = DateTime.Now;
+            DateTime fechaInicio = new DateTime(hoy.Year, hoy.Month, 1);
+            DateTime fechaFin = fechaInicio.AddMonths(1).AddDays(-1);
+
+            var reporte = ventaFacade.ReporteVentasPorRol(fechaInicio, fechaFin).ToList();
+
+            byte[] pdf = ReporteVentasPorRolPdf.Generar(fechaInicio, fechaFin, reporte);
+
+            string nombreArchivo = $"reporte-ventas-por-rol-{hoy:yyyy-MM}.pdf";
+
+            return File(pdf, "application/pdf", nombreArchivo);
         }
     }
 }

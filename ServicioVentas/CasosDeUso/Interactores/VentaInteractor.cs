@@ -4,6 +4,7 @@ using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
+using VitalCareSBA.ServicioVentas.Entidades.DTOs;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.Application.Services 
 {
@@ -22,7 +23,6 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
             _medicamentoRepository = medicamentoRepository;
             _validador = validador;
         }
-
 
         public IEnumerable<Venta> ObtenerTodos()
         {
@@ -60,7 +60,6 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
                     detallesInput: detallesInput,
                     idUsuarioEditor: null);
 
-
                 Result validacion = _validador.Validar(venta);
 
                 if (!validacion.IsSuccess)
@@ -73,7 +72,6 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
                 return Result.Fail(ex.Message);
             }
         }
-
 
         public Result Actualizar(
             int idVenta,
@@ -113,10 +111,14 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
             }
         }
 
-
         public Result EliminarLogicamente(int idVenta, int idUsuarioEditor)
         {
             return _repository.AnularVentaLogicamente(idVenta, idUsuarioEditor);
+        }
+
+        public IEnumerable<ReporteVentasPorRolDto> ReporteVentasPorRol(DateTime fechaInicio, DateTime fechaFin)
+        {
+            return _repository.ReporteVentasPorRol(fechaInicio, fechaFin);
         }
 
         private Venta ConstruirVenta(
@@ -170,5 +172,3 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
         }
     }
 }
-
-

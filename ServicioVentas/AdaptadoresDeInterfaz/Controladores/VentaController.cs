@@ -85,5 +85,23 @@ namespace VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Controladores
 
             return Ok(new { mensaje = "Venta anulada correctamente." });
         }
+
+        [HttpGet("reporte-ventas-por-rol")]
+        public IActionResult ReporteVentasPorRolMensual()
+        {
+            DateTime hoy = DateTime.Now;
+            DateTime fechaInicio = new DateTime(hoy.Year, hoy.Month, 1);
+            DateTime fechaFin = fechaInicio.AddMonths(1).AddDays(-1);
+
+            var reporte = ventaFacade.ReporteVentasPorRol(fechaInicio, fechaFin);
+
+            return Ok(new
+            {
+                mensaje = "Reporte mensual de ventas por rol generado correctamente.",
+                desde = fechaInicio.ToString("dd/MM/yyyy"),
+                hasta = fechaFin.ToString("dd/MM/yyyy"),
+                data = reporte
+            });
+        }
     }
 }

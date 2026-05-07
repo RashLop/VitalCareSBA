@@ -1,6 +1,7 @@
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
+using VitalCareSBA.ServicioVentas.Entidades.DTOs;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Application.Facades 
 {
@@ -42,12 +43,15 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Fachadas //ProyectoArqSoft.Appl
         }
 
         public IEnumerable<Venta> ObtenerVentas(string filtro)
-        => _ventaService.ObtenerTodos(filtro);
+            => _ventaService.ObtenerTodos(filtro);
 
         public Venta? ObtenerVentaPorId(int id)
             => _ventaService.ObtenerPorId(id);
 
         public List<DetalleVenta> ObtenerDetalles(int idVenta)
             => _ventaService.ObtenerDetallesPorVenta(idVenta);
+
+        public IEnumerable<ReporteVentasPorRolDto> ReporteVentasPorRol(DateTime fechaInicio, DateTime fechaFin)
+            => _ventaService.ReporteVentasPorRol(fechaInicio, fechaFin);
     }
 }

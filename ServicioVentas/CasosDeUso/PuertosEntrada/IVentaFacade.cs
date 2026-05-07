@@ -1,5 +1,6 @@
 using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
+using VitalCareSBA.ServicioVentas.Entidades.DTOs;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada //ProyectoArqSoft.Application.Interfaces 
 {
@@ -26,5 +27,7 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada //ProyectoArqSof
 
         IEnumerable<Cliente> ObtenerClientes(string filtro = "");
         IEnumerable<Medicamento> ObtenerMedicamentos();
+
+        IEnumerable<ReporteVentasPorRolDto> ReporteVentasPorRol(DateTime fechaInicio, DateTime fechaFin);
     }
 }

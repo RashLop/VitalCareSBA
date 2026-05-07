@@ -5,10 +5,11 @@ using VitalCareSBA.ServicioVentas.Entidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Persistencia.Conexion;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Ayudadores;
+using VitalCareSBA.ServicioVentas.Entidades.DTOs;
 
-namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //ProyectoArqSoft.Infrastructure.Persistence.Repositories
+namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios
 {
-    public class VentaRepository : IVentaOutputPort//IVentaRepository
+    public class VentaRepository : IVentaOutputPort
     {
         private readonly string connectionString;
 
@@ -29,7 +30,7 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                ////CONCAT(v.nit, ' - ', v.razon_social) AS cliente,
+
                 string query = @"SELECT v.id,
                                         v.fecha_hora,
                                         v.total,
@@ -74,15 +75,12 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
                             IdUsuario = Convert.ToInt32(reader["usuario_idUsuario"]),
                             Estado = Convert.ToInt16(reader["estado"]),
                             FechaRegistro = Convert.ToDateTime(reader["fecha_registro"]),
-
                             UltimaActualizacion = reader["ultima_actualizacion"] == DBNull.Value
                                 ? null
                                 : Convert.ToDateTime(reader["ultima_actualizacion"]),
-
                             IdUsuarioEditor = reader["Id_usuario_editor"] == DBNull.Value
                                 ? null
                                 : Convert.ToInt32(reader["Id_usuario_editor"]),
-
                             Nit = StringHelper.LimpiarEspacios(reader["nit"]?.ToString()),
                             RazonSocial = StringHelper.LimpiarEspacios(reader["razon_social"]?.ToString())
                         });
@@ -192,7 +190,7 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
                 try
                 {
                     Result validacionDb = ValidarVentaParaRegistro(connection, transaction, venta);
-                    if (validacionDb.IsSuccess == false)
+                    if (!validacionDb.IsSuccess)
                     {
                         transaction.Rollback();
                         return validacionDb;
@@ -236,7 +234,7 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
                     foreach (DetalleVenta detalle in venta.Detalles)
                     {
                         Result resultadoStock = DescontarStock(connection, transaction, detalle.IdMedicamento, detalle.Cantidad);
-                        if (resultadoStock.IsSuccess == false)
+                        if (!resultadoStock.IsSuccess)
                         {
                             transaction.Rollback();
                             return resultadoStock;
@@ -277,22 +275,22 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
                 try
                 {
                     Result estadoVenta = ValidarVentaEditable(connection, transaction, venta.Id);
-                    if (estadoVenta.IsSuccess == false)
+                    if (!estadoVenta.IsSuccess)
                     {
                         transaction.Rollback();
                         return estadoVenta;
                     }
 
                     Result validacionBase = ValidarVentaParaActualizacion(connection, transaction, venta);
-                    if (validacionBase.IsSuccess == false)
+                    if (!validacionBase.IsSuccess)
                     {
                         transaction.Rollback();
                         return validacionBase;
-                    }   
+                    }
 
                     string queryCliente = @"SELECT nit, razon_social
-                                    FROM cliente
-                                    WHERE id = @idCliente AND estado = 1";
+                                            FROM cliente
+                                            WHERE id = @idCliente AND estado = 1";
 
                     MySqlCommand commandCliente = new MySqlCommand(queryCliente, connection, transaction);
                     commandCliente.Parameters.AddWithValue("@idCliente", venta.IdCliente);
@@ -324,7 +322,7 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
                     }
 
                     Result validacionStock = ValidarMedicamentosYStock(connection, transaction, venta.Detalles);
-                    if (validacionStock.IsSuccess == false)
+                    if (!validacionStock.IsSuccess)
                     {
                         transaction.Rollback();
                         return validacionStock;
@@ -367,7 +365,7 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
                     foreach (DetalleVenta detalle in venta.Detalles)
                     {
                         Result resultadoStock = DescontarStock(connection, transaction, detalle.IdMedicamento, detalle.Cantidad);
-                        if (resultadoStock.IsSuccess == false)
+                        if (!resultadoStock.IsSuccess)
                         {
                             transaction.Rollback();
                             return resultadoStock;
@@ -477,6 +475,62 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
             }
         }
 
+        public int Count()
+        {
+            string query = "SELECT COUNT(*) FROM venta";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                MySqlCommand command = new MySqlCommand(query, connection);
+                connection.Open();
+
+                return Convert.ToInt32(command.ExecuteScalar());
+            }
+        }
+
+        public IEnumerable<ReporteVentasPorRolDto> ReporteVentasPorRol(DateTime fechaInicio, DateTime fechaFin)
+        {
+            List<ReporteVentasPorRolDto> reporte = new();
+
+            string query = @"
+                SELECT 
+                    u.role AS rol,
+                    COUNT(v.id) AS cantidad_ventas,
+                    COALESCE(SUM(v.total), 0) AS total_recaudado
+                FROM usuario u
+                LEFT JOIN venta v 
+                    ON v.usuario_idUsuario = u.id
+                    AND v.estado = 1
+                    AND v.fecha_hora BETWEEN @fechaInicio AND @fechaFin
+                WHERE u.role IN ('Administrador', 'Bioquimico', 'Bioquímico')
+                GROUP BY u.role
+                ORDER BY cantidad_ventas DESC;";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@fechaInicio", fechaInicio.Date);
+                command.Parameters.AddWithValue("@fechaFin", fechaFin.Date.AddDays(1).AddSeconds(-1));
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        reporte.Add(new ReporteVentasPorRolDto
+                        {
+                            Rol = reader["rol"].ToString() ?? string.Empty,
+                            CantidadVentas = Convert.ToInt32(reader["cantidad_ventas"]),
+                            TotalRecaudado = Convert.ToDecimal(reader["total_recaudado"])
+                        });
+                    }
+                }
+            }
+
+            return reporte;
+        }
+
         private Result ValidarVentaParaRegistro(MySqlConnection connection, MySqlTransaction transaction, Venta venta)
         {
             if (!ClienteActivo(connection, transaction, venta.IdCliente))
@@ -543,22 +597,13 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
                 reader.Close();
 
                 if (estado != 1)
-                    return Result.Fail($"El medicamento {nombreMedicamento} esta inactivo.");
+                    return Result.Fail($"El medicamento {nombreMedicamento} está inactivo.");
 
                 if (stock <= 0)
                     return Result.Fail($"El medicamento {nombreMedicamento} no tiene stock disponible.");
 
                 if (stock < detalle.Cantidad)
                     return Result.Fail($"Stock insuficiente para el medicamento {nombreMedicamento}.");
-
-                if (estado != 1)
-                    return Result.Fail($"El medicamento con id {detalle.IdMedicamento} está inactivo.");
-
-                if (stock <= 0)
-                    return Result.Fail($"El medicamento con id {detalle.IdMedicamento} no tiene stock disponible.");
-
-                if (stock < detalle.Cantidad)
-                    return Result.Fail($"Stock insuficiente para el medicamento con id {detalle.IdMedicamento}.");
             }
 
             return Result.Ok();
@@ -610,7 +655,10 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
             return Convert.ToInt32(command.ExecuteScalar()) > 0;
         }
 
-        private List<DetalleVenta> GetDetallesByVentaIdTransaccional(MySqlConnection connection, MySqlTransaction transaction, int idVenta)
+        private List<DetalleVenta> GetDetallesByVentaIdTransaccional(
+            MySqlConnection connection,
+            MySqlTransaction transaction,
+            int idVenta)
         {
             List<DetalleVenta> detalles = new();
 
@@ -625,6 +673,7 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
             command.Parameters.AddWithValue("@id_venta", idVenta);
 
             using MySqlDataReader reader = command.ExecuteReader();
+
             while (reader.Read())
             {
                 detalles.Add(new DetalleVenta
@@ -638,18 +687,5 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
 
             return detalles;
         }
-        public int Count()
-        {
-            string query = "SELECT COUNT(*) FROM venta";
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                MySqlCommand command = new MySqlCommand(query, connection);
-                connection.Open();
-
-                return Convert.ToInt32(command.ExecuteScalar());
-            }
-        }        
     }
 }
-

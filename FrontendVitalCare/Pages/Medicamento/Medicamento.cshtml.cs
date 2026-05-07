@@ -1,7 +1,7 @@
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using VitalCareSBA.FrontendVitalCare.Adaptadores;
+using FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 
 namespace FrontendVitalCare.Pages.Medicamento

@@ -1,19 +1,19 @@
 using FrontendVitalCare.Dto.ClasificacionDtos;
 
-namespace VitalCareSBA.FrontendVitalCare.Adaptadores
+namespace FrontendVitalCare.Adaptadores
 {
     public class ClasificacionAdapter
     {
-        private readonly IAdapter<ClasificacionDto> _adapter;
+        private readonly AdapterJSON<ClasificacionDto> _adapter;
 
-        public ClasificacionAdapter(IAdapter<ClasificacionDto> adapter)
+        public ClasificacionAdapter(AdapterJSON<ClasificacionDto> adapter)
         {
             _adapter = adapter;
         }
 
         public Task<List<ClasificacionDto>> GetAllAsync()
         {
-            return _adapter.GetListAsync($"api/clasificaciones");
+            return _adapter.GetListAsync("api/clasificaciones");
         }
 
         public Task<ClasificacionDto?> GetByIdAsync(int id)
@@ -23,7 +23,7 @@ namespace VitalCareSBA.FrontendVitalCare.Adaptadores
 
         public Task<bool> CreateAsync(ClasificacionDto clasificacion)
         {
-            return _adapter.PostAsync($"api/clasificaciones", clasificacion);
+            return _adapter.PostAsync("api/clasificaciones", clasificacion);
         }
 
         public Task<bool> UpdateAsync(ClasificacionDto clasificacion)

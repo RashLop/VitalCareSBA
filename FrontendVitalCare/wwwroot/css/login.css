@@ -320,6 +320,26 @@ body {
     transform: translateY(-1px);
 }
 
+/* FORGOT PASSWORD LINK */
+.forgot-password-link {
+    text-align: right;
+    margin-top: 12px;
+    margin-bottom: 18px;
+}
+
+.forgot-password-link a {
+    color: #146c57;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.forgot-password-link a:hover {
+    color: #0f5a48;
+    text-decoration: underline;
+}
+
 /* FOOT LINK */
 .extra-links {
     text-align: center;

@@ -1,11 +1,11 @@
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Clasificacion
 {
-    public class ClasificacionModel : PageModel
+    public class ClasificacionModel : BasePageModel
     {
         private readonly ClasificacionAdapter _clasificacionAdapter;
 
@@ -25,6 +25,13 @@ namespace FrontendVitalCare.Pages.Clasificacion
         // Obtener lista de clasificaciones con filtro opcional
         public async Task OnGetAsync(string filtro = "")
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+            {
+                await Task.CompletedTask;
+                return;
+            }
+
             try
             {
                 Clasificaciones = await _clasificacionAdapter.GetAllAsync();
@@ -49,6 +56,9 @@ namespace FrontendVitalCare.Pages.Clasificacion
         // Eliminar una clasificación por id
         public async Task<IActionResult> OnPostEliminarAsync(int id)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
             try
             {
                 bool exito = await _clasificacionAdapter.DeleteAsync(id);

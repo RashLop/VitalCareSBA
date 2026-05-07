@@ -1,11 +1,11 @@
 using FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 
 namespace FrontendVitalCare.Pages
 {
-    public class ClienteModel : PageModel
+    public class ClienteModel : BasePageModel
     {
         private readonly ClienteApiAdapter clienteApiAdapter;
 
@@ -21,6 +21,13 @@ namespace FrontendVitalCare.Pages
 
         public async Task OnGetAsync(string? filtro, string? mensaje, string? error)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+            {
+                await Task.CompletedTask;
+                return;
+            }
+
             FiltroActual = filtro?.Trim() ?? string.Empty;
             Mensaje = mensaje ?? string.Empty;
             MensajeError = error ?? string.Empty;
@@ -38,6 +45,10 @@ namespace FrontendVitalCare.Pages
 
         public async Task<IActionResult> OnPostEliminarClienteLogicamenteAsync(int id)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
             if (idUsuario == null || idUsuario == 0)
             {

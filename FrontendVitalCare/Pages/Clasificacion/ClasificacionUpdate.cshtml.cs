@@ -1,11 +1,11 @@
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Clasificacion
 {
-    public class ClasificacionUpdateModel : PageModel
+    public class ClasificacionUpdateModel : BasePageModel
     {
         private readonly ClasificacionAdapter _clasificacionAdapter;
 
@@ -34,6 +34,10 @@ namespace FrontendVitalCare.Pages.Clasificacion
         // Cargar clasificación para edición
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 Clasificacion = await _clasificacionAdapter.GetByIdAsync(id);
@@ -60,6 +64,10 @@ namespace FrontendVitalCare.Pages.Clasificacion
         // Cargar clasificación para edición mediante POST
         public async Task<IActionResult> OnPostCargarClasificacionParaEdicionAsync(int id)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 Clasificacion = await _clasificacionAdapter.GetByIdAsync(id);
@@ -86,6 +94,10 @@ namespace FrontendVitalCare.Pages.Clasificacion
         // Actualizar clasificación
         public async Task<IActionResult> OnPostActualizarClasificacionAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 if (Id <= 0)

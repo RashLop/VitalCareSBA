@@ -1,11 +1,11 @@
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Clasificacion
 {
-    public class ClasificacionCreateModel : PageModel
+    public class ClasificacionCreateModel : BasePageModel
     {
         private readonly ClasificacionAdapter _clasificacionAdapter;
 
@@ -28,11 +28,20 @@ namespace FrontendVitalCare.Pages.Clasificacion
 
         public void OnGet()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+            {
+                return;
+            }
         }
 
         // Crear clasificación
         public async Task<IActionResult> OnPostCrearClasificacionAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 if (string.IsNullOrWhiteSpace(Nombre))

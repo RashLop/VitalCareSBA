@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 using FrontendVitalCare.Services;
 using FrontendVitalCare.Dto.VentasDtos;
 
 namespace FrontendVitalCare.Pages.Ventas
 {
-    public class VentaModel : PageModel
+    public class VentaModel : BasePageModel
     {
         private readonly VentaClient _ventaClient;
 
@@ -31,6 +31,13 @@ namespace FrontendVitalCare.Pages.Ventas
         // Cargar lista de ventas
         public async Task OnGetAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+            {
+                await Task.CompletedTask;
+                return;
+            }
+
             try
             {
                 Ventas = await _ventaClient.ObtenerTodosAsync(Filtro);
@@ -44,6 +51,10 @@ namespace FrontendVitalCare.Pages.Ventas
         // Handler para anular venta
         public async Task<IActionResult> OnPostEliminarVentaLogicamenteAsync(int id)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 // IdUsuarioEditor fijo por ejemplo (puedes sacar de sesión)

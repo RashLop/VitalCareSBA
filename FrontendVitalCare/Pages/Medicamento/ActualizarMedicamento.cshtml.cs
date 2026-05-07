@@ -1,13 +1,13 @@
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 using FrontendVitalCare.Adaptadores;
 using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {
-    public class ActualizarMedicamentoModel : PageModel
+    public class ActualizarMedicamentoModel : BasePageModel
     {
         private readonly MedicamentoAdapter _medicamentoAdapter;
         private readonly ClasificacionAdapter _clasificacionAdapter;
@@ -49,6 +49,10 @@ namespace FrontendVitalCare.Pages.Medicamento
         // Cargar medicamento para edición
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 // Cargar clasificaciones
@@ -78,12 +82,14 @@ namespace FrontendVitalCare.Pages.Medicamento
             }
         }
 
-        // Cargar medicamento para edición mediante POST
         public async Task<IActionResult> OnPostCargarMedicamentoParaEdicionAsync(int id)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
-                // Cargar clasificaciones
                 Clasificaciones = await _clasificacionAdapter.GetAllAsync();
 
                 Medicamento = await _medicamentoAdapter.GetByIdAsync(id);
@@ -93,7 +99,6 @@ namespace FrontendVitalCare.Pages.Medicamento
                     return RedirectToPage("Medicamento", new { error = "Medicamento no encontrado" });
                 }
 
-                // Llenar las propiedades con los datos del medicamento
                 Id = Medicamento.Id;
                 Nombre = Medicamento.Nombre;
                 Presentacion = Medicamento.Presentacion;
@@ -110,9 +115,12 @@ namespace FrontendVitalCare.Pages.Medicamento
             }
         }
 
-        // Actualizar medicamento
         public async Task<IActionResult> OnPostActualizarMedicamentoAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 if (Id <= 0)

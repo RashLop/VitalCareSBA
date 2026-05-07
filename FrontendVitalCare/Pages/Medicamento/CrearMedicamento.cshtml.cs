@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using System.Data;
@@ -8,7 +8,7 @@ using VitalCareSBA.FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {
-    public class CrearMedicamento : PageModel
+    public class CrearMedicamento : BasePageModel
     {
         private readonly AdapterJSON<MedicamentoDto> _medicamentoClient;
         private readonly ClasificacionAdapter _clasificacionAdapter;
@@ -32,11 +32,22 @@ namespace FrontendVitalCare.Pages.Medicamento
 
         public async Task OnGetAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+            {
+                await Task.CompletedTask;
+                return;
+            }
+
             Clasificaciones = await _clasificacionAdapter.GetAllAsync();
         }
 
         public async Task<IActionResult> OnPostCrearMedicamentoAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             if (!ModelState.IsValid)
             {
                 MensajeError = "Por favor, completa todos los campos correctamente.";

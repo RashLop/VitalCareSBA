@@ -2,7 +2,7 @@ using FrontendVitalCare.Services;
 using FrontendVitalCare.Dto.VentasDtos;
 using FrontendVitalCare.Adaptadores;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 using FrontendVitalCare.Dto;
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using System.Text.Json;
@@ -12,7 +12,7 @@ using FrontendVitalCare.Dto.PdfDtos;
 
 namespace FrontendVitalCare.Pages.Ventas
 {
-    public class CrearVentaModel : PageModel
+    public class CrearVentaModel : BasePageModel
     {
         private readonly ClienteApiAdapter _clienteAdapter;
         private readonly MedicamentoAdapter _medicamentoAdapter;
@@ -65,6 +65,13 @@ namespace FrontendVitalCare.Pages.Ventas
         // Cargar listas de clientes y medicamentos
         public async Task OnGetAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+            {
+                await Task.CompletedTask;
+                return;
+            }
+
             Clientes = await _clienteAdapter.ObtenerTodosAsync("");
             Medicamentos = await _medicamentoAdapter.GetAllAsync();
 
@@ -85,6 +92,10 @@ namespace FrontendVitalCare.Pages.Ventas
         // Crear venta
         public async Task<IActionResult> OnPostCrearVentaAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 if (IdCliente <= 0)
@@ -215,6 +226,10 @@ namespace FrontendVitalCare.Pages.Ventas
         // Crear cliente desde modal
         public async Task<IActionResult> OnPostCrearClienteModalAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 if (ClienteModalEsConsumidorFinal)

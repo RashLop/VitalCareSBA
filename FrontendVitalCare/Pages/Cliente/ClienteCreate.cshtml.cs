@@ -1,11 +1,11 @@
 using FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 
 namespace FrontendVitalCare.Pages
 {
-    public class ClienteCreateModel : PageModel
+    public class ClienteCreateModel : BasePageModel
     {
         private readonly ClienteApiAdapter clienteApiAdapter;
 
@@ -26,6 +26,10 @@ namespace FrontendVitalCare.Pages
 
         public async Task<IActionResult> OnPostCrearClienteAsync()
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
             if (idUsuario == null || idUsuario == 0)
             {

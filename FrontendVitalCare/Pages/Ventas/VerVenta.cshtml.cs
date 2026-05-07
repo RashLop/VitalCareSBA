@@ -3,11 +3,11 @@ using FrontendVitalCare.Dto.MedicamentoDtos;
 using FrontendVitalCare.Dto.VentasDtos;
 using FrontendVitalCare.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 
 namespace FrontendVitalCare.Pages.Ventas
 {
-    public class VerVentaModel : PageModel
+    public class VerVentaModel : BasePageModel
     {
         private readonly VentaClient _ventaClient;
         private readonly MedicamentoAdapter _medicamentoAdapter;
@@ -26,6 +26,10 @@ namespace FrontendVitalCare.Pages.Ventas
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 Venta = await _ventaClient.ObtenerPorIdAsync(id);

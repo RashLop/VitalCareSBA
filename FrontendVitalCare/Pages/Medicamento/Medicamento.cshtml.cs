@@ -1,13 +1,13 @@
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontendVitalCare.Pages.Base;
 using VitalCareSBA.FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Dto.ClasificacionDtos;
 using FrontendVitalCare.Adaptadores;
 
 namespace FrontendVitalCare.Pages.Medicamento
 {
-    public class MedicamentoPageModel : PageModel
+    public class MedicamentoPageModel : BasePageModel
     {
         private readonly MedicamentoAdapter _medicamentoAdapter;
         private readonly ClasificacionAdapter _clasificacionAdapter;
@@ -30,6 +30,13 @@ namespace FrontendVitalCare.Pages.Medicamento
         // Obtener lista de medicamentos con filtro opcional
         public async Task OnGetAsync(string filtro = "")
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+            {
+                await Task.CompletedTask;
+                return;
+            }
+
             try
             {
                 // Cargar clasificaciones
@@ -58,6 +65,10 @@ namespace FrontendVitalCare.Pages.Medicamento
         // Eliminar un medicamento por id
         public async Task<IActionResult> OnPostEliminarAsync(int id)
         {
+            IActionResult? acceso = ValidarAccesoPorRoles("Admin", "Bioquimico");
+            if (acceso != null)
+                return acceso;
+
             try
             {
                 int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");

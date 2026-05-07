@@ -100,6 +100,10 @@
                             </div>
                         </div>
 
+                        <div class="forgot-password-link">
+                            <a asp-page="/Auth/OlvidoContrasena">¿Olvidaste tu contraseña?</a>
+                        </div>
+
                         @if (!string.IsNullOrWhiteSpace(Model.MensajeError))
                         {
                             <div class="alert alert-error">@Model.MensajeError</div>

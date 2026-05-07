@@ -42,7 +42,7 @@ namespace FrontendVitalCare.Pages.Usuario
                 IdUsuario = usuario.IdUsuario,
                 Nombres = usuario.Nombres,
                 ApellidoPaterno = usuario.ApellidoPaterno,
-                ApellidoMaterno = usuario.ApellidoMaterno ?? string.Empty,
+                ApellidoMaterno = usuario.ApellidoMaterno,
                 Ci = usuario.Ci,
                 CiExtencion = usuario.CiExtencion,
                 Telefono = usuario.Telefono,
@@ -62,12 +62,6 @@ namespace FrontendVitalCare.Pages.Usuario
             if (acceso != null)
                 return acceso;
 
-            if (!ModelState.IsValid)
-            {
-                Estado.MensajeError = ObtenerPrimerError() ?? "Verifica los datos del formulario.";
-                return Page();
-            }
-
             OperacionApiDto resultado = await _usuarioClient.ActualizarAsync(Input);
             if (!resultado.Exito)
             {
@@ -76,14 +70,6 @@ namespace FrontendVitalCare.Pages.Usuario
             }
 
             return RedirectToPage("Usuario", new { mensaje = "Perfil de usuario actualizado correctamente" });
-        }
-
-        private string? ObtenerPrimerError()
-        {
-            return ModelState.Values
-                .SelectMany(v => v.Errors)
-                .Select(e => e.ErrorMessage)
-                .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m));
         }
     }
 }

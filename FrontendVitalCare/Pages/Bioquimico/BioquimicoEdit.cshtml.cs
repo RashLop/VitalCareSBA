@@ -19,10 +19,10 @@ namespace FrontendVitalCare.Pages.Bioquimico
         };
 
         [BindProperty]
-        public string CiBase { get; set; } = string.Empty;
+        public string? CiBase { get; set; }
 
         [BindProperty]
-        public string CiComplemento { get; set; } = string.Empty;
+        public string? CiComplemento { get; set; }
 
         public BioquimicoEditModel(UsuarioClient usuarioClient)
         {
@@ -59,7 +59,7 @@ namespace FrontendVitalCare.Pages.Bioquimico
                 IdUsuario = usuario.IdUsuario,
                 Nombres = usuario.Nombres,
                 ApellidoPaterno = usuario.ApellidoPaterno,
-                ApellidoMaterno = usuario.ApellidoMaterno ?? string.Empty,
+                ApellidoMaterno = usuario.ApellidoMaterno,
                 Ci = usuario.Ci ?? string.Empty,
                 CiExtencion = usuario.CiExtencion ?? string.Empty,
                 Telefono = usuario.Telefono ?? string.Empty,
@@ -86,13 +86,6 @@ namespace FrontendVitalCare.Pages.Bioquimico
             if (!resultadoUsuarioActual.Exito || usuarioActual == null || !EsBioquimico(usuarioActual.Role))
                 return RedirectToPage("Bioquimico", new { error = "Bioquímico no encontrado o rol inválido" });
 
-            ModelState.Remove("Input.Ci");
-            if (!TryValidateModel(Input, nameof(Input)))
-            {
-                Estado.MensajeError = ObtenerPrimerError() ?? "Verifica los datos del formulario.";
-                return Page();
-            }
-
             OperacionApiDto resultado = await _usuarioClient.ActualizarAsync(Input);
             if (!resultado.Exito)
             {
@@ -108,7 +101,7 @@ namespace FrontendVitalCare.Pages.Bioquimico
             return string.Equals(role?.Trim(), "Bioquimico", StringComparison.OrdinalIgnoreCase);
         }
 
-        private string ConstruirCi(string ciBase, string ciComplemento)
+        private string ConstruirCi(string? ciBase, string? ciComplemento)
         {
             string baseLimpia = (ciBase ?? string.Empty).Trim();
             string complementoLimpio = (ciComplemento ?? string.Empty).Trim().ToUpperInvariant();
@@ -116,14 +109,6 @@ namespace FrontendVitalCare.Pages.Bioquimico
             return string.IsNullOrWhiteSpace(complementoLimpio)
                 ? baseLimpia
                 : $"{baseLimpia}-{complementoLimpio}";
-        }
-
-        private string? ObtenerPrimerError()
-        {
-            return ModelState.Values
-                .SelectMany(v => v.Errors)
-                .Select(e => e.ErrorMessage)
-                .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m));
         }
     }
 }

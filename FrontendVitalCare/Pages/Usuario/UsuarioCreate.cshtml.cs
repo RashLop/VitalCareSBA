@@ -15,10 +15,10 @@ namespace FrontendVitalCare.Pages.Usuario
         public UsuarioCreateDto Input { get; set; } = new();
 
         [BindProperty]
-        public string CiBase { get; set; } = string.Empty;
+        public string? CiBase { get; set; }
 
         [BindProperty]
-        public string CiComplemento { get; set; } = string.Empty;
+        public string? CiComplemento { get; set; }
 
         public UsuarioCreateModel(UsuarioClient usuarioClient)
         {
@@ -42,13 +42,6 @@ namespace FrontendVitalCare.Pages.Usuario
 
             Input.Ci = ConstruirCi(CiBase, CiComplemento);
 
-            ModelState.Remove("Input.Ci");
-            if (!TryValidateModel(Input, nameof(Input)))
-            {
-                Estado.MensajeError = ObtenerPrimerError() ?? "Verifica los datos del formulario.";
-                return Page();
-            }
-
             string userName = CredencialesHelper.GenerarUserName(
                 Input.Nombres,
                 Input.ApellidoPaterno,
@@ -68,7 +61,7 @@ namespace FrontendVitalCare.Pages.Usuario
             });
         }
 
-        private string ConstruirCi(string ciBase, string ciComplemento)
+        private string ConstruirCi(string? ciBase, string? ciComplemento)
         {
             string baseLimpia = (ciBase ?? string.Empty).Trim();
             string complementoLimpio = (ciComplemento ?? string.Empty).Trim().ToUpperInvariant();
@@ -76,14 +69,6 @@ namespace FrontendVitalCare.Pages.Usuario
             return string.IsNullOrWhiteSpace(complementoLimpio)
                 ? baseLimpia
                 : $"{baseLimpia}-{complementoLimpio}";
-        }
-
-        private string? ObtenerPrimerError()
-        {
-            return ModelState.Values
-                .SelectMany(v => v.Errors)
-                .Select(e => e.ErrorMessage)
-                .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m));
         }
     }
 }

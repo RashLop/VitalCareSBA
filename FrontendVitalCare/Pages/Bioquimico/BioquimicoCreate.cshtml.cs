@@ -17,10 +17,10 @@ namespace FrontendVitalCare.Pages.Bioquimico
         };
 
         [BindProperty]
-        public string CiBase { get; set; } = string.Empty;
+        public string? CiBase { get; set; }
 
         [BindProperty]
-        public string CiComplemento { get; set; } = string.Empty;
+        public string? CiComplemento { get; set; }
 
         public BioquimicoCreateModel(UsuarioClient usuarioClient)
         {
@@ -45,13 +45,6 @@ namespace FrontendVitalCare.Pages.Bioquimico
             Registro.Role = "Bioquimico";
             Registro.Ci = ConstruirCi(CiBase, CiComplemento);
 
-            ModelState.Remove("Registro.Ci");
-            if (!TryValidateModel(Registro, nameof(Registro)))
-            {
-                Estado.MensajeError = ObtenerPrimerError() ?? "Verifica los datos del formulario.";
-                return Page();
-            }
-
             OperacionApiDto resultado = await _usuarioClient.CrearAsync(Registro);
             if (!resultado.Exito)
             {
@@ -61,14 +54,14 @@ namespace FrontendVitalCare.Pages.Bioquimico
 
             Estado.Mensaje = "Usuario registrado correctamente. Revisa las credenciales generadas y tu correo electrónico.";
             Registro = new UsuarioCreateDto { Role = "Bioquimico" };
-            CiBase = string.Empty;
-            CiComplemento = string.Empty;
+            CiBase = null;
+            CiComplemento = null;
             ModelState.Clear();
 
             return Page();
         }
 
-        private string ConstruirCi(string ciBase, string ciComplemento)
+        private string ConstruirCi(string? ciBase, string? ciComplemento)
         {
             string baseLimpia = (ciBase ?? string.Empty).Trim();
             string complementoLimpio = (ciComplemento ?? string.Empty).Trim().ToUpperInvariant();
@@ -76,14 +69,6 @@ namespace FrontendVitalCare.Pages.Bioquimico
             return string.IsNullOrWhiteSpace(complementoLimpio)
                 ? baseLimpia
                 : $"{baseLimpia}-{complementoLimpio}";
-        }
-
-        private string? ObtenerPrimerError()
-        {
-            return ModelState.Values
-                .SelectMany(v => v.Errors)
-                .Select(e => e.ErrorMessage)
-                .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m));
         }
     }
 }

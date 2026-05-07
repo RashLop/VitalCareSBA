@@ -53,6 +53,9 @@ builder.Services.AddScoped<MedicamentoAdapter>(sp =>
     return new MedicamentoAdapter(adapterJson);
 });
 
+//Registrar service
+builder.Services.AddScoped<ComprobanteVentaPdfService>();
+
 // Registrar AdapterJSON para Ventas
 builder.Services.AddHttpClient<AdapterJSON<VentaDto>>(client =>
 {

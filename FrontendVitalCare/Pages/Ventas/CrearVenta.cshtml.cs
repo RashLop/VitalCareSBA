@@ -7,6 +7,8 @@ using FrontendVitalCare.Dto;
 using FrontendVitalCare.Dto.MedicamentoDtos;
 using System.Text.Json;
 using VitalCareSBA.Dto.VentasDtos;
+using FrontendVitalCare.Servicios;
+using FrontendVitalCare.Dto.PdfDtos;
 
 namespace FrontendVitalCare.Pages.Ventas
 {
@@ -15,15 +17,18 @@ namespace FrontendVitalCare.Pages.Ventas
         private readonly ClienteApiAdapter _clienteAdapter;
         private readonly MedicamentoAdapter _medicamentoAdapter;
         private readonly VentaClient _ventaClient;
+        private readonly ComprobanteVentaPdfService _pdfService;
 
         public CrearVentaModel(
             ClienteApiAdapter clienteAdapter,
             MedicamentoAdapter medicamentoAdapter,
-            VentaClient ventaClient)
+            VentaClient ventaClient,
+            ComprobanteVentaPdfService pdfService)
         {
             _clienteAdapter = clienteAdapter;
             _medicamentoAdapter = medicamentoAdapter;
             _ventaClient = ventaClient;
+            _pdfService = pdfService;
         }
 
         // Datos para la UI
@@ -147,8 +152,42 @@ namespace FrontendVitalCare.Pages.Ventas
 
                 if (exito)
                 {
-                    Mensaje = "Venta registrada correctamente.";
-                    return RedirectToPage("/Ventas/Venta");
+                    var cliente = Clientes.FirstOrDefault(c => c.IdCliente == IdCliente);
+
+                    if (cliente == null)
+                    {
+                        cliente = (await _clienteAdapter.ObtenerTodosAsync(""))
+                            .FirstOrDefault(c => c.IdCliente == IdCliente);
+                    }
+
+                    var comprobante = new ComprobanteVentaPdfDto
+                    {
+                        Fecha = DateTime.Now,
+                        Nit = cliente?.Nit ?? "N/A",
+                        RazonSocial = cliente?.RazonSocial ?? "Cliente",
+                        Cajero = HttpContext.Session.GetString("UserName") ?? "cajero"
+                    };
+
+                    foreach (var item in detalles)
+                    {
+                        var medicamento = Medicamentos
+                            .FirstOrDefault(m => m.Id == item.IdMedicamento);
+
+                        comprobante.Detalles.Add(new ComprobanteVentaDetallePdfDto
+                        {
+                            Cantidad = item.Cantidad,
+                            Descripcion = medicamento?.Nombre ?? "Medicamento",
+                            PrecioUnitario = medicamento?.Precio ?? 0
+                        });
+                    }
+
+                    comprobante.Total = comprobante.Detalles.Sum(x => x.Importe);
+
+                    byte[] pdf = _pdfService.Generar(comprobante);
+
+                    Response.Headers["Content-Disposition"] = "inline; filename=comprobante.pdf";
+
+                    return File(pdf, "application/pdf");
                 }
                 else
                 {

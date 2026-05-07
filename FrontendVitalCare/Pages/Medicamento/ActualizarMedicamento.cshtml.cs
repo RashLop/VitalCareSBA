@@ -78,6 +78,38 @@ namespace FrontendVitalCare.Pages.Medicamento
             }
         }
 
+        // Cargar medicamento para edición mediante POST
+        public async Task<IActionResult> OnPostCargarMedicamentoParaEdicionAsync(int id)
+        {
+            try
+            {
+                // Cargar clasificaciones
+                Clasificaciones = await _clasificacionAdapter.GetAllAsync();
+
+                Medicamento = await _medicamentoAdapter.GetByIdAsync(id);
+
+                if (Medicamento == null)
+                {
+                    return RedirectToPage("Medicamento", new { error = "Medicamento no encontrado" });
+                }
+
+                // Llenar las propiedades con los datos del medicamento
+                Id = Medicamento.Id;
+                Nombre = Medicamento.Nombre;
+                Presentacion = Medicamento.Presentacion;
+                IdClasificacion = Medicamento.IdClasificacion;
+                Concentracion = Medicamento.Concentracion;
+                Precio = Medicamento.Precio;
+                Stock = Medicamento.Stock;
+
+                return Page();
+            }
+            catch
+            {
+                return RedirectToPage("Medicamento", new { error = "Error al cargar el medicamento" });
+            }
+        }
+
         // Actualizar medicamento
         public async Task<IActionResult> OnPostActualizarMedicamentoAsync()
         {

@@ -69,9 +69,15 @@
                         <td>@c.Origen</td>
                         <td>@c.Descripcion</td>
                         <td>
-                            <a asp-page="ClasificacionUpdate" asp-route-id="@c.Id" class="btn btn-warning btn-sm">
-                                Editar
-                            </a>
+                            <form method="post"
+                                  asp-page="ClasificacionUpdate"
+                                  asp-page-handler="CargarClasificacionParaEdicion"
+                                  style="display:inline;">
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <button type="submit" class="btn btn-warning btn-sm">
+                                    Editar
+                                </button>
+                            </form>
 
                             <button type="button"
                                     class="btn btn-danger btn-sm btnEliminar"

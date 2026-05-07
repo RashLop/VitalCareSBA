@@ -1,6 +1,7 @@
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada;
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
 using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.Entidades.DTOs;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Gateways;
@@ -117,6 +118,11 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.Interactores //ProyectoArqSoft.
         public Result EliminarLogicamente(int idVenta, int idUsuarioEditor)
         {
             return _repository.AnularVentaLogicamente(idVenta, idUsuarioEditor);
+        }
+
+        public IEnumerable<ReporteVentasPorRolDto> ReporteVentasPorRol(DateTime fechaInicio, DateTime fechaFin)
+        {
+            return _repository.ReporteVentasPorRol(fechaInicio, fechaFin);
         }
 
         private Venta ConstruirVenta(

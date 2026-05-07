@@ -1,4 +1,5 @@
 using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.Entidades.DTOs;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida //ProyectoArqSoft.Application.Ports.Output 
@@ -16,5 +17,6 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida //ProyectoArqSoft
         Result RegistrarVenta(Venta venta);
         Result ActualizarVenta(Venta venta);
         Result AnularVentaLogicamente(int idVenta, int idUsuarioEditor);
+        IEnumerable<ReporteVentasPorRolDto> ReporteVentasPorRol(DateTime fechaInicio, DateTime fechaFin);
     }
 }

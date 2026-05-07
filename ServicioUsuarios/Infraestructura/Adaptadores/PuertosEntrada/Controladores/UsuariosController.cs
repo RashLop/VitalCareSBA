@@ -18,9 +18,11 @@ namespace ServicioUsuarios.Infraestructura.Adaptadores.PuertosEntrada.Controlado
         }
 
         [HttpGet("GetUsers")]
-        public IActionResult GetAllUsers()
+        public IActionResult GetAllUsers([FromQuery] string? filtro)
         {
-            IEnumerable<UsuarioDto> usuarios = _usuarioService.ObtenerTodos();
+            IEnumerable<UsuarioDto> usuarios = string.IsNullOrWhiteSpace(filtro)
+                ? _usuarioService.ObtenerTodos()
+                : _usuarioService.ObtenerTodos(filtro);
             
             return Ok(new { mensaje = "Usuarios obtenidos correctamente.", data = usuarios });
         }
@@ -40,6 +42,19 @@ namespace ServicioUsuarios.Infraestructura.Adaptadores.PuertosEntrada.Controlado
             return usuario == null?
             BadRequest(new { mensaje = "Usuario no encontrado." ,StatusCode = 404}):
             Ok(new { mensaje = "Usuario obtenido correctamente.", data = usuario });
+        }
+
+        [HttpGet("getUserById")]
+        public IActionResult GetUserById([FromQuery] string id)
+        {
+            if (!int.TryParse(id, out int idUsuario))
+                return BadRequest(new { mensaje = "Id de usuario invalido.", StatusCode = 400 });
+
+            UsuarioDto? usuario = _usuarioService.ObtenerUsuarioPorId(idUsuario);
+
+            return usuario == null
+                ? BadRequest(new { mensaje = "Usuario no encontrado.", StatusCode = 404 })
+                : Ok(new { mensaje = "Usuario obtenido correctamente.", data = usuario });
         }
 
 

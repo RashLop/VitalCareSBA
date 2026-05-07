@@ -51,5 +51,33 @@ namespace FrontendVitalCare.Pages.Ventas
                 return RedirectToPage("Venta");
             }
         }
+
+        public async Task<IActionResult> OnPostCargarVentaParaVerAsync(int id)
+        {
+            try
+            {
+                Venta = await _ventaClient.ObtenerPorIdAsync(id);
+
+                if (Venta == null)
+                {
+                    MensajeError = "Venta no encontrada";
+                    return RedirectToPage("Venta");
+                }
+
+                // Cargar nombres de los medicamentos usando el Adapter
+                foreach (var detalle in Venta.Detalles)
+                {
+                    var medicamento = await _medicamentoAdapter.GetByIdAsync(detalle.IdMedicamento);
+                    detalle.NombreMedicamento = medicamento?.Nombre ?? "Desconocido";
+                }
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                MensajeError = $"Error al cargar la venta: {ex.Message}";
+                return RedirectToPage("Venta");
+            }
+        }
     }
 }

@@ -57,6 +57,32 @@ namespace FrontendVitalCare.Pages.Clasificacion
             }
         }
 
+        // Cargar clasificación para edición mediante POST
+        public async Task<IActionResult> OnPostCargarClasificacionParaEdicionAsync(int id)
+        {
+            try
+            {
+                Clasificacion = await _clasificacionAdapter.GetByIdAsync(id);
+
+                if (Clasificacion == null)
+                {
+                    return RedirectToPage("Clasificacion", new { error = "Clasificación no encontrada" });
+                }
+
+                // Llenar las propiedades con los datos de la clasificación
+                Id = Clasificacion.Id;
+                Nombre = Clasificacion.Nombre;
+                Origen = Clasificacion.Origen;
+                Descripcion = Clasificacion.Descripcion;
+
+                return Page();
+            }
+            catch
+            {
+                return RedirectToPage("Clasificacion", new { error = "Error al cargar la clasificación" });
+            }
+        }
+
         // Actualizar clasificación
         public async Task<IActionResult> OnPostActualizarClasificacionAsync()
         {

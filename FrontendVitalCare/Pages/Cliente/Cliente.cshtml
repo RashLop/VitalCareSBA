@@ -67,11 +67,15 @@
                             <td>@cliente.RazonSocial</td>
                             <td>@cliente.CorreoElectronico</td>
                             <td>
-                                <a asp-page="ClienteEdit"
-                                   asp-route-id="@cliente.IdCliente"
-                                   class="btn btn-warning btn-sm">
-                                    Editar
-                                </a>
+                                <form method="post"
+                                      asp-page="ClienteEdit"
+                                      asp-page-handler="CargarClienteParaEdicion"
+                                      style="display:inline;">
+                                    <input type="hidden" name="id" value="@cliente.IdCliente" />
+                                    <button type="submit" class="btn btn-warning btn-sm">
+                                        Editar
+                                    </button>
+                                </form>
 
                                 <button type="button"
                                         class="btn btn-danger btn-sm"

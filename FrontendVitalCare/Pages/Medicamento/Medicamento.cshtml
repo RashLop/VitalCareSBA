@@ -54,7 +54,13 @@
                         <td><span class="badge bg-info text-dark">@(Model.Clasificaciones.FirstOrDefault(c => c.Id == m.IdClasificacion)?.Nombre ?? "N/A")</span></td>
                         <td class="text-success fw-bold">@m.Precio</td>
                         <td>
-                            <a asp-page="ActualizarMedicamento" asp-route-id="@m.Id" class="btn btn-warning btn-sm">Editar</a>
+                            <form method="post"
+                                  asp-page="ActualizarMedicamento"
+                                  asp-page-handler="CargarMedicamentoParaEdicion"
+                                  style="display:inline;">
+                                <input type="hidden" name="id" value="@m.Id" />
+                                <button type="submit" class="btn btn-warning btn-sm">Editar</button>
+                            </form>
 
                             <button type="button" class="btn btn-danger btn-sm btnEliminar"
                                     data-id="@m.Id" data-nombre="@m.Nombre"

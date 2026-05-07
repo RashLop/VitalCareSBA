@@ -1,10 +1,12 @@
 using System.Text.Json;
 using FrontendVitalCare.Adaptadores;
 using FrontendVitalCare.Adaptadores.Auth;
+using FrontendVitalCare.Adaptadores.Reportes;
 using FrontendVitalCare.Adaptadores.Usuarios;
 using FrontendVitalCare.Dto;
 using FrontendVitalCare.Dto.Auth;
 using FrontendVitalCare.Dto.MedicamentoDtos;
+using FrontendVitalCare.Dto.Reportes;
 using FrontendVitalCare.Dto.Usuarios;
 using FrontendVitalCare.Dto.VentasDtos;
 using FrontendVitalCare.Dto.ClasificacionDtos;
@@ -49,6 +51,7 @@ builder.Services.AddHttpClient<UsuarioClient>(client =>
 builder.Services.AddScoped<IAdapter<JsonElement, UsuarioLoginResponseDto>, LoginResponseAdapter>();
 builder.Services.AddScoped<IAdapter<JsonElement, MensajeApiDto>, MensajeApiAdapter>();
 builder.Services.AddScoped<IAdapter<JsonElement, UsuarioDto>, UsuarioAdapter>();
+builder.Services.AddScoped<IAdapter<JsonElement, ReporteVentasPorRolResponseDto>, ReporteVentasPorRolAdapter>();
 
 builder.Services.AddHttpClient<AdapterJSON<MedicamentoDto>>(cliente => ///Api
 {
@@ -78,6 +81,14 @@ builder.Services.AddHttpClient<AdapterJSON<VentaDto>>(client =>
 
 // Registrar VentaClient
 builder.Services.AddScoped<VentaClient>();
+
+builder.Services.AddHttpClient<ReporteVentasPorRolClient>(client =>
+{
+    string baseUrl = builder.Configuration["ApiUrls:ServicioVentas"]
+        ?? builder.Configuration["Servicios:VentasBaseUrl"]
+        ?? "http://localhost:5080/";
+    client.BaseAddress = new Uri(baseUrl);
+});
 
 // Registrar AdapterJSON para Clasificaciones
 builder.Services.AddHttpClient<AdapterJSON<ClasificacionDto>>(client =>

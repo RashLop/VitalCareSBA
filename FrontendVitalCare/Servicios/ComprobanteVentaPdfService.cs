@@ -85,8 +85,8 @@ namespace FrontendVitalCare.Servicios
                             {
                                 header.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).AlignCenter().Text("Cant.").Bold();
                                 header.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).AlignCenter().Text("Descripción").Bold();
-                                header.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).AlignCenter().Text("P. Unit. (Bs)").Bold();
-                                header.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).AlignCenter().Text("Importe (Bs)").Bold();
+                                header.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).AlignCenter().Text("P. Unit.").Bold();
+                                header.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).AlignCenter().Text("Importe").Bold();
                             });
 
                             foreach (var item in comprobante.Detalles)

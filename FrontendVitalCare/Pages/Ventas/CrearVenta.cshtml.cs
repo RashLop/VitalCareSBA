@@ -125,9 +125,19 @@ namespace FrontendVitalCare.Pages.Ventas
                     return Page();
                 }
 
+                int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+
+                if (idUsuario == null)
+                {
+                    MensajeError = "No se pudo identificar el usuario que registra la venta.";
+                    await OnGetAsync();
+                    return Page();
+                }
+
                 var nuevaVenta = new VentaDto
                 {
                     IdCliente = IdCliente,
+                    IdUsuario = idUsuario.Value,
                     MetodoPago = MetodoPago,
                     Detalles = detalles,
                     FechaHora = DateTime.Now

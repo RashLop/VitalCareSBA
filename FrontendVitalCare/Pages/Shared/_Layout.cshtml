@@ -125,6 +125,14 @@
                                             Gestionar Ventas
                                         </a>
                                     </li>
+                                    @if (esAdministrador)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-page="/Ventas/ReporteVentasPorRol">
+                                                Reporte por Rol
+                                            </a>
+                                        </li>
+                                    }
                                 </ul>
                             </li>
 

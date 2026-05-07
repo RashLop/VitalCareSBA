@@ -1,0 +1,75 @@
+@page
+@model FrontendVitalCare.Pages.Ventas.ReporteVentasPorRolModel
+@{
+    ViewData["Title"] = "Reporte por Rol";
+}
+
+<div class="container mt-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-success mb-1">Reporte de Ventas por Rol</h2>
+            <p class="text-muted mb-0">
+                Periodo actual:
+                <span class="fw-semibold">
+                    @(string.IsNullOrWhiteSpace(Model.Reporte.Desde) ? "Sin rango disponible" : $"{Model.Reporte.Desde} - {Model.Reporte.Hasta}")
+                </span>
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a asp-page="Venta" class="btn btn-secondary">Volver a Ventas</a>
+            <a asp-page-handler="DescargarPdf" class="btn btn-success">
+                <i class="bi bi-file-earmark-pdf me-1"></i> Descargar PDF
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Estado.MensajeError))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @Model.Estado.MensajeError
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card-module p-4">
+        @if (Model.TieneDatos)
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Rol</th>
+                            <th class="text-center">Cantidad de Ventas</th>
+                            <th class="text-end">Total Recaudado (Bs.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Reporte.Data)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@item.Rol</td>
+                                <td class="text-center">@item.CantidadVentas</td>
+                                <td class="text-end text-success fw-bold">@item.TotalRecaudado.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-light">
+                            <th>Total</th>
+                            <th class="text-center">@Model.Reporte.Data.Sum(x => x.CantidadVentas)</th>
+                            <th class="text-end text-success">@Model.Reporte.Data.Sum(x => x.TotalRecaudado).ToString("N2")</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <h5 class="text-muted">No hay ventas registradas para el periodo actual.</h5>
+                <p class="text-secondary mb-0">Cuando existan ventas del mes, el resumen aparecerá aquí.</p>
+            </div>
+        }
+    </div>
+</div>

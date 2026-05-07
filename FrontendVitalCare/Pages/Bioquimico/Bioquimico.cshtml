@@ -46,16 +46,18 @@
     <div class="card-module">
         <table class="table table-hover align-middle">
             <caption class="visually-hidden">Tabla de bioquímicos registrados con sus datos principales y acciones disponibles.</caption>
-            <thead class="table-success text-center">
+
+            <!-- Se quitó el text-center general para arreglar la desalineación -->
+            <thead class="table-success">
                 <tr>
                     <th>Nombre Completo</th>
                     <th>Carnet</th>
-                    <th>Expedido</th>
+                    <th class="text-center">Expedido</th>
                     <th>Teléfono</th>
                     <th>Email</th>
                     <th>Username</th>
-                    <th>Estado</th>
-                    <th style="width:170px">Acciones</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center" style="width:170px">Acciones</th>
                 </tr>
             </thead>
 
@@ -73,7 +75,7 @@
                             <td>@bioquimico.Telefono</td>
                             <td>@bioquimico.Email</td>
                             <td>@bioquimico.UserName</td>
-                            <td>
+                            <td class="text-center">
                                 @if (esActivo)
                                 {
                                     <span class="badge bg-success">ACTIVO</span>
@@ -83,7 +85,7 @@
                                     <span class="badge bg-danger">DE BAJA</span>
                                 }
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <form method="post"
                                       asp-page="BioquimicoEdit"
                                       asp-page-handler="CargarBioquimicoParaEdicion"

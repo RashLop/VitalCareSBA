@@ -48,7 +48,7 @@
                         <input type="text"
                                id="razonSocialCliente"
                                class="form-control"
-                               placeholder="Razon social del cliente"
+                               placeholder="Razón social del cliente"
                                readonly />
 
                         <input type="hidden"
@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="MetodoPago" class="form-label fw-bold"></label>
+                        <label asp-for="MetodoPago" class="form-label fw-bold">Método de pago</label>
                         <select asp-for="MetodoPago" class="form-select" required>
                             <option value="Efectivo">Efectivo</option>
                             <option value="Tarjeta">Tarjeta</option>
@@ -138,11 +138,11 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                Esta seguro de registrar esta venta?
+                ¿Está seguro de registrar esta venta?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="btnConfirmarVentaModal">Si, guardar venta</button>
+                <button type="button" class="btn btn-success" id="btnConfirmarVentaModal">Sí, guardar venta</button>
             </div>
         </div>
     </div>
@@ -169,12 +169,12 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold" for="ClienteModalRazonSocial">Razon Social</label>
+                        <label class="form-label fw-bold" for="ClienteModalRazonSocial">Razón Social</label>
                         <input class="form-control" id="ClienteModalRazonSocial" name="ClienteModalRazonSocial" maxlength="45" required>
                     </div>
 
                     <div class="mb-0">
-                        <label class="form-label fw-bold" for="ClienteModalCorreoElectronico">Correo Electronico</label>
+                        <label class="form-label fw-bold" for="ClienteModalCorreoElectronico">Correo Electrónico</label>
                         <input class="form-control" id="ClienteModalCorreoElectronico" name="ClienteModalCorreoElectronico" type="email" maxlength="45">
                     </div>
                 </div>
@@ -193,27 +193,27 @@
         const clientes = [
             @foreach (var c in Model.Clientes)
             {
-                <text>
-                {
-                    id: @c.IdCliente,
-                    nit: "@c.Nit",
-                    razonSocial: "@c.RazonSocial"
-                },
-                </text>
+                    <text>
+                    {
+                        id: @c.IdCliente,
+                        nit: "@c.Nit",
+                        razonSocial: "@c.RazonSocial"
+                    },
+                    </text>
             }
         ];
 
         const medicamentos = [
             @foreach (var m in Model.Medicamentos)
             {
-                <text>
-                {
-                    id: @m.Id,
-                    nombre: "@m.Nombre",
-                    precio: @(m.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)),
-                    stock: @m.Stock
-                },
-                </text>
+                    <text>
+                    {
+                        id: @m.Id,
+                        nombre: "@m.Nombre",
+                        precio: @(m.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+                        stock: @m.Stock
+                    },
+                    </text>
             }
         ];
     </script>
@@ -472,12 +472,12 @@
             const detalles = detallesJsonInput.value;
 
             if (!idCliente || Number(idCliente) <= 0) {
-                mostrarErrorVenta("Debe seleccionar un cliente valido.");
+                mostrarErrorVenta("Debe seleccionar un cliente válido.");
                 return;
             }
 
             if (!metodoPago || metodoPago.trim() === "") {
-                mostrarErrorVenta("Debe seleccionar un metodo de pago.");
+                mostrarErrorVenta("Debe seleccionar un método de pago.");
                 return;
             }
 
@@ -529,10 +529,10 @@
                 }, 1000);
             }
             catch (error) {
-                mostrarErrorVenta("Ocurrio un error al registrar la venta.");
+                mostrarErrorVenta("Ocurrió un error al registrar la venta.");
                 console.error(error);
                 btnConfirmarVentaModal.disabled = false;
-                btnConfirmarVentaModal.textContent = "Si, guardar venta";
+                btnConfirmarVentaModal.textContent = "Sí, guardar venta";
             }
         });
 

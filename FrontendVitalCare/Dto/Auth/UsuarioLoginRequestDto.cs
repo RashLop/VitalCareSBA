@@ -9,7 +9,7 @@ namespace FrontendVitalCare.Dto.Auth
         [JsonPropertyName("email")]
         public string EmailOUserName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La contrasena es obligatoria.")]
+        [Required(ErrorMessage = "La contraseña es obligatoria.")]
         [JsonPropertyName("password")]
         public string Password { get; set; } = string.Empty;
     }

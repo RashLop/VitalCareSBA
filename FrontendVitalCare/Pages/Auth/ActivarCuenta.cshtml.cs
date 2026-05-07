@@ -34,7 +34,7 @@ namespace FrontendVitalCare.Pages.Auth
 
             if (string.IsNullOrWhiteSpace(Token))
             {
-                Mensaje = "Token invalido.";
+                Mensaje = "Token inválido.";
                 EsError = true;
                 MostrarFormulario = false;
                 return Page();
@@ -55,7 +55,7 @@ namespace FrontendVitalCare.Pages.Auth
 
             if (string.IsNullOrWhiteSpace(Token))
             {
-                Mensaje = "Token invalido.";
+                Mensaje = "Token inválido.";
                 EsError = true;
                 MostrarFormulario = false;
                 return Page();
@@ -63,7 +63,7 @@ namespace FrontendVitalCare.Pages.Auth
 
             if (string.IsNullOrWhiteSpace(NuevaPassword))
             {
-                Mensaje = "La nueva contrasena es obligatoria.";
+                Mensaje = "La nueva contraseña es obligatoria.";
                 EsError = true;
                 MostrarFormulario = true;
                 return Page();
@@ -71,7 +71,7 @@ namespace FrontendVitalCare.Pages.Auth
 
             if (NuevaPassword != ConfirmarPassword)
             {
-                Mensaje = "La contrasena y su confirmacion no coinciden.";
+                Mensaje = "La contraseña y su confirmación no coinciden.";
                 EsError = true;
                 MostrarFormulario = true;
                 return Page();

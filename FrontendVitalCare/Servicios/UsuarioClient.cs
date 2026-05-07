@@ -98,7 +98,7 @@ namespace FrontendVitalCare.Servicios
 
             string? idUsuarioSesion = _httpContextAccessor.HttpContext?.Session.GetInt32("IdUsuario")?.ToString();
             if (string.IsNullOrWhiteSpace(idUsuarioSesion))
-                return OperacionApiDto.Error("No se pudo identificar el usuario que realiza la operacion.");
+                return OperacionApiDto.Error("No se pudo identificar el usuario que realiza la operación.");
 
             string url = $"api/usuarios/EliminarUsuario?idUsuario={idUsuario}&idUsuarioSesion={Uri.EscapeDataString(idUsuarioSesion)}";
             HttpResponseMessage response = await _httpClient.DeleteAsync(url);

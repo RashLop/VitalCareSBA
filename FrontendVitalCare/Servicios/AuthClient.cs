@@ -38,9 +38,9 @@ namespace FrontendVitalCare.Servicios
 
             UsuarioLoginResponseDto respuesta = _loginResponseAdapter.Adapt(json.Value);
             if (string.IsNullOrWhiteSpace(respuesta.Token))
-                return (OperacionApiDto.Error("El servidor no devolvio un token valido."), null);
+                return (OperacionApiDto.Error("El servidor no devolvió un token válido."), null);
 
-            return (OperacionApiDto.Ok("Inicio de sesion correcto."), respuesta);
+            return (OperacionApiDto.Ok("Inicio de sesión correcto."), respuesta);
         }
 
         public async Task<OperacionApiDto> RegistrarAsync(UsuarioRegistroDto request)
@@ -53,7 +53,7 @@ namespace FrontendVitalCare.Servicios
         {
             string url = $"api/auth/validar-activacion?token={Uri.EscapeDataString(token)}";
             HttpResponseMessage response = await _httpClient.GetAsync(url);
-            return await LeerResultadoAsync(response, "Token valido.");
+            return await LeerResultadoAsync(response, "Token válido.");
         }
 
         public async Task<OperacionApiDto> ActivarCuentaAsync(ActivarCuentaRequestDto request)
@@ -76,7 +76,7 @@ namespace FrontendVitalCare.Servicios
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             HttpResponseMessage response = await _httpClient.SendAsync(request);
-            return await LeerResultadoAsync(response, "Sesion cerrada correctamente.");
+            return await LeerResultadoAsync(response, "Sesión cerrada correctamente.");
         }
 
         public async Task<OperacionApiDto> SolicitarRecuperacionAsync(SolicitarRecuperacionDto request)

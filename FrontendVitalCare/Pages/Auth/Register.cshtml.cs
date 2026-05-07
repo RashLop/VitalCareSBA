@@ -56,7 +56,7 @@ namespace FrontendVitalCare.Pages.Auth
                 return Page();
             }
 
-            MensajeOk = "Usuario registrado correctamente. Revisa las credenciales generadas y tu correo electronico.";
+            MensajeOk = "Usuario registrado correctamente. Revisa las credenciales generadas y tu correo electrónico.";
             return Page();
         }
     }

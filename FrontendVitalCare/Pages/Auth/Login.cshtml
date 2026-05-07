@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Login - Farmacia VitalCare</title>
+    <title>Iniciar sesión - Farmacia VitalCare</title>
     <link rel="stylesheet" href="~/css/login.css" />
 </head>
 <body>
@@ -35,13 +35,13 @@
                 <h1>Accede a<br />Farmacia VitalCare</h1>
 
                 <p>
-                    Ingresa al sistema de gestion farmaceutica para administrar
+                    Ingresa al sistema de gestión farmacéutica para administrar
                     usuarios, inventario, ventas y operaciones de forma segura y eficiente.
                 </p>
 
                 <div class="login-note">
-                    Utiliza tus credenciales para entrar al sistema. Si aun no tienes una cuenta,
-                    puedes registrarte desde la opcion correspondiente.
+                    Utiliza tus credenciales para entrar al sistema. Si aún no tienes una cuenta,
+                    puedes registrarte desde la opción correspondiente.
                 </div>
 
                 <div class="login-actions">
@@ -56,13 +56,13 @@
                     </div>
 
                     <div class="card-header">
-                        <h2>Iniciar sesion</h2>
+                        <h2>Iniciar sesión</h2>
                         <p>Ingresa tus credenciales para acceder al sistema</p>
                     </div>
 
                     <form method="post" class="login-form">
                         <div class="form-group">
-                            <label asp-for="LoginRequest.EmailOUserName">Correo electronico o nombre de usuario</label>
+                            <label asp-for="LoginRequest.EmailOUserName">Correo electrónico o nombre de usuario</label>
                             <input type="text"
                                    asp-for="LoginRequest.EmailOUserName"
                                    placeholder="Ej. usuario@correo.com o nombre de usuario"
@@ -70,7 +70,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="LoginRequest.Password">Contrasena</label>
+                            <label asp-for="LoginRequest.Password">Contraseña</label>
 
                             <div class="password-wrapper">
                                 <input type="password"
@@ -82,9 +82,9 @@
                                 <button type="button"
                                         class="toggle-password"
                                         id="togglePassword"
-                                        aria-label="Mostrar contrasena"
+                                        aria-label="Mostrar contraseña"
                                         aria-pressed="false"
-                                        title="Mostrar contrasena">
+                                        title="Mostrar contraseña">
                                     <svg class="icon-eye icon-show" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path>
                                         <circle cx="12" cy="12" r="3"></circle>
@@ -113,7 +113,7 @@
 
                         <div class="extra-links">
                             ¿No tienes cuenta?
-                            <a asp-page="/Auth/Register">Registrate</a>
+                            <a asp-page="/Auth/Register">Regístrate</a>
                         </div>
                     </form>
                 </div>
@@ -130,8 +130,8 @@
             passwordInput.type = showingPassword ? 'password' : 'text';
             togglePassword.classList.toggle('active', !showingPassword);
             togglePassword.setAttribute('aria-pressed', (!showingPassword).toString());
-            togglePassword.setAttribute('aria-label', showingPassword ? 'Mostrar contrasena' : 'Ocultar contrasena');
-            togglePassword.setAttribute('title', showingPassword ? 'Mostrar contrasena' : 'Ocultar contrasena');
+            togglePassword.setAttribute('aria-label', showingPassword ? 'Mostrar contraseña' : 'Ocultar contraseña');
+            togglePassword.setAttribute('title', showingPassword ? 'Mostrar contraseña' : 'Ocultar contraseña');
         });
     </script>
 </body>

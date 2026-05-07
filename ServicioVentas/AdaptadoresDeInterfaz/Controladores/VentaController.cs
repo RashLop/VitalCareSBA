@@ -116,7 +116,11 @@ namespace VitalCareSBA.ServicioVentas.AdaptadoresDeInterfaz.Controladores
 
             byte[] pdf = ReporteVentasPorRolPdf.Generar(fechaInicio, fechaFin, reporte);
 
-            string nombreArchivo = $"reporte-ventas-por-rol-{hoy:yyyy-MM}.pdf";
+            string nombreArchivo = $"reporte-ventas-por-rol-{hoy:yyyy-MM-dd-HHmmss}.pdf";
+
+            Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["Expires"] = "0";
 
             return File(pdf, "application/pdf", nombreArchivo);
         }

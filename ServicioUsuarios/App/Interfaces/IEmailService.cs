@@ -11,5 +11,12 @@ namespace ServicioUsuarios.App.Interfaces
             string passwordTemporal,
             string enlaceActivacion
         );
+
+        Result EnviarCorreoRecuperacionContrasena(
+            string emailDestino,
+            string nombres,
+            string userName,
+            string enlaceRecuperacion
+        );
     }
 }

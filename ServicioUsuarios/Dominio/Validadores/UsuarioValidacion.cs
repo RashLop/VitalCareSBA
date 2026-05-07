@@ -147,6 +147,15 @@ namespace ServicioUsuarios.Dominio.Validadores
             if (password.Length > 128)
                 return Result.Fail("La contrasena no puede exceder 128 caracteres.");
 
+            if (!Regex.IsMatch(password, @"[a-z]"))
+                return Result.Fail("La contrasena debe contener al menos una letra minuscula.");
+
+            if (!Regex.IsMatch(password, @"[A-Z]"))
+                return Result.Fail("La contrasena debe contener al menos una letra mayuscula.");
+
+            if (!Regex.IsMatch(password, @"[0-9]"))
+                return Result.Fail("La contrasena debe contener al menos un numero.");
+
             return null;
         }
 

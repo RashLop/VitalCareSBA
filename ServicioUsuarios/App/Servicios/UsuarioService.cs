@@ -165,7 +165,109 @@ namespace ServicioUsuarios.App.Servicios
             if (nuevaPassword.Length < 8)
                 return Result.Fail("La contrasena debe tener al menos 8 caracteres.");
 
+            // Validar que tenga mayúsculas, minúsculas y números
+            if (!System.Text.RegularExpressions.Regex.IsMatch(nuevaPassword, @"[a-z]"))
+                return Result.Fail("La contrasena debe contener al menos una letra minuscula.");
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(nuevaPassword, @"[A-Z]"))
+                return Result.Fail("La contrasena debe contener al menos una letra mayuscula.");
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(nuevaPassword, @"[0-9]"))
+                return Result.Fail("La contrasena debe contener al menos un numero.");
+
             UsuarioToken? usuarioToken = _tokenService.ValidarToken(token, TipoTokenConstantes.ActivacionCuenta);
+            if (usuarioToken == null)
+                return Result.Fail("El token ha expirado o es invalido.");
+
+            Usuario? usuario = _repository.GetById(usuarioToken.UsuarioIdUsuario);
+            if (usuario == null)
+                return Result.Fail("El usuario no existe.");
+
+            string passwordHash = PasswordHelper.Hash(nuevaPassword);
+            int filasAfectadas = _repository.CambiarPassword(usuario.IdUsuario, passwordHash, false);
+            if (filasAfectadas <= 0)
+                return Result.Fail("No se pudo actualizar la contrasena.");
+
+            Result resultadoToken = _tokenService.MarcarComoUsado(usuarioToken.IdUsuarioToken);
+            if (!resultadoToken.IsSuccess)
+                return resultadoToken;
+
+            return Result.Ok();
+        }
+
+        public Result SolicitarRecuperacionContrasena(string email)
+        {
+            email = StringHelper.LimpiarTextoMinus(email);
+            if (string.IsNullOrWhiteSpace(email))
+                return Result.Fail("El correo electronico es obligatorio.");
+
+            Usuario? usuario = _repository.GetByEmail(email);
+            if (usuario == null)
+                return Result.Fail("El correo no esta registrado en el sistema.");
+
+            if (usuario.Activo != 1)
+                return Result.Fail("El usuario esta inactivo. Contacta al administrador.");
+
+            UsuarioTokenGeneracionDto tokenDto = new UsuarioTokenGeneracionDto
+            {
+                IdUsuario = usuario.IdUsuario,
+                TipoToken = TipoTokenConstantes.ResetPassword,
+                MinutosExpiracion = 60
+            };
+
+            (Result resultadoToken, string tokenParaUrl) = _tokenService.GenerarToken(tokenDto, out string _);
+            if (!resultadoToken.IsSuccess)
+                return resultadoToken;
+
+            string tokenSeguro = Uri.EscapeDataString(tokenParaUrl);
+            string enlaceRecuperacion = $"http://localhost:5051/Auth/RecuperarContrasena?token={tokenSeguro}";
+
+            return _emailService.EnviarCorreoRecuperacionContrasena(
+                usuario.Email,
+                usuario.Nombres,
+                usuario.UserName,
+                enlaceRecuperacion
+            );
+        }
+
+        public Result ValidarRecuperacionContrasena(string token)
+        {
+            token = token?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(token))
+                return Result.Fail("El token de recuperacion es invalido.");
+
+            UsuarioToken? usuarioToken = _tokenService.ValidarToken(token, TipoTokenConstantes.ResetPassword);
+            if (usuarioToken == null)
+                return Result.Fail("El token ha expirado o es invalido.");
+
+            return Result.Ok();
+        }
+
+        public Result ConfirmarRecuperacionContrasena(string token, string nuevaPassword)
+        {
+            token = token?.Trim() ?? string.Empty;
+            nuevaPassword = nuevaPassword?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(token))
+                return Result.Fail("El token de recuperacion es invalido.");
+
+            if (string.IsNullOrWhiteSpace(nuevaPassword))
+                return Result.Fail("La nueva contrasena es obligatoria.");
+
+            if (nuevaPassword.Length < 8)
+                return Result.Fail("La contrasena debe tener al menos 8 caracteres.");
+
+            // Validar que tenga mayúsculas, minúsculas y números
+            if (!System.Text.RegularExpressions.Regex.IsMatch(nuevaPassword, @"[a-z]"))
+                return Result.Fail("La contrasena debe contener al menos una letra minuscula.");
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(nuevaPassword, @"[A-Z]"))
+                return Result.Fail("La contrasena debe contener al menos una letra mayuscula.");
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(nuevaPassword, @"[0-9]"))
+                return Result.Fail("La contrasena debe contener al menos un numero.");
+
+            UsuarioToken? usuarioToken = _tokenService.ValidarToken(token, TipoTokenConstantes.ResetPassword);
             if (usuarioToken == null)
                 return Result.Fail("El token ha expirado o es invalido.");
 

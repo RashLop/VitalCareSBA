@@ -2,6 +2,7 @@ using MySql.Data.MySqlClient;
 using VitalCareSBA.ServicioVentas.CasosDeUso.PuertosSalida;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.Entidades.DTOs;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Utilidades;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Persistencia.Conexion;
 using VitalCareSBA.ServicioVentas.FrameworksYDrivers.Ayudadores;
@@ -649,7 +650,57 @@ namespace VitalCareSBA.ServicioVentas.FrameworksYDrivers.Repositorios //Proyecto
 
                 return Convert.ToInt32(command.ExecuteScalar());
             }
-        }        
+        }
+
+        public IEnumerable<ReporteVentasPorRolDto> ReporteVentasPorRol(DateTime fechaInicio, DateTime fechaFin)
+        {
+            List<ReporteVentasPorRolDto> reporte = new();
+
+            const string query = @"
+                SELECT
+                    CASE
+                        WHEN UPPER(TRIM(u.role)) IN ('ADMIN', 'ADMINISTRADOR') THEN 'Admin'
+                        WHEN UPPER(REPLACE(REPLACE(TRIM(u.role), 'í', 'i'), 'Í', 'I')) = 'BIOQUIMICO' THEN 'Bioquimico'
+                        ELSE TRIM(u.role)
+                    END AS rol,
+                    COUNT(v.id) AS cantidad_ventas,
+                    COALESCE(SUM(v.total), 0) AS total_recaudado
+                FROM usuario u
+                LEFT JOIN venta v
+                    ON v.usuario_idUsuario = u.id
+                    AND v.estado = 1
+                    AND v.fecha_hora BETWEEN @fechaInicio AND @fechaFin
+                WHERE UPPER(REPLACE(REPLACE(TRIM(u.role), 'í', 'i'), 'Í', 'I')) IN ('ADMIN', 'ADMINISTRADOR', 'BIOQUIMICO')
+                GROUP BY
+                    CASE
+                        WHEN UPPER(TRIM(u.role)) IN ('ADMIN', 'ADMINISTRADOR') THEN 'Admin'
+                        WHEN UPPER(REPLACE(REPLACE(TRIM(u.role), 'í', 'i'), 'Í', 'I')) = 'BIOQUIMICO' THEN 'Bioquimico'
+                        ELSE TRIM(u.role)
+                    END
+                ORDER BY cantidad_ventas DESC, total_recaudado DESC;";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@fechaInicio", fechaInicio.Date);
+                command.Parameters.AddWithValue("@fechaFin", fechaFin.Date.AddDays(1).AddSeconds(-1));
+
+                using MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    reporte.Add(new ReporteVentasPorRolDto
+                    {
+                        Rol = reader["rol"]?.ToString() ?? string.Empty,
+                        CantidadVentas = Convert.ToInt32(reader["cantidad_ventas"]),
+                        TotalRecaudado = Convert.ToDecimal(reader["total_recaudado"])
+                    });
+                }
+            }
+
+            return reporte;
+        }
     }
 }
 

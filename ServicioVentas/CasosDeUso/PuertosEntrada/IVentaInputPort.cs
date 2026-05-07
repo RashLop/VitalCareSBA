@@ -1,4 +1,5 @@
 using VitalCareSBA.ServicioVentas.Entidades;
+using VitalCareSBA.ServicioVentas.Entidades.DTOs;
 using VitalCareSBA.ServicioVentas.CasosDeUso.Validadores;
 
 namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada //ProyectoArqSoft.Application.Interfaces 
@@ -25,5 +26,6 @@ namespace VitalCareSBA.ServicioVentas.CasosDeUso.PuertosEntrada //ProyectoArqSof
             int idUsuarioEditor);
 
         Result EliminarLogicamente(int idVenta, int idUsuarioEditor);
+        IEnumerable<ReporteVentasPorRolDto> ReporteVentasPorRol(DateTime fechaInicio, DateTime fechaFin);
     }
 }

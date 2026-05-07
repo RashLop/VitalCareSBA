@@ -20,17 +20,17 @@
                     <form method="post" asp-page-handler="CrearUsuario" class="row g-3">
 
                         <div class="col-md-12 form-floating mb-1">
-                            <input asp-for="Input.Nombres" class="form-control med-input" placeholder="Nombre" required />
+                            <input asp-for="Input.Nombres" class="form-control med-input" placeholder="Nombre" required maxlength="100" pattern="[A-Za-zÀ-ÖØ-öø-ÿ ]+" title="Solo se permiten letras y espacios." />
                             <label class="ms-2">Nombres</label>
                         </div>
 
                         <div class="col-md-6 form-floating">
-                            <input asp-for="Input.ApellidoPaterno" class="form-control med-input" placeholder="Primer Apellido" required />
+                            <input asp-for="Input.ApellidoPaterno" class="form-control med-input" placeholder="Primer Apellido" required maxlength="100" pattern="[A-Za-zÀ-ÖØ-öø-ÿ ]+" title="Solo se permiten letras y espacios." />
                             <label class="ms-2">Primer Apellido</label>
                         </div>
 
                         <div class="col-md-6 form-floating">
-                            <input asp-for="Input.ApellidoMaterno" class="form-control med-input" placeholder="Segundo Apellido" />
+                            <input asp-for="Input.ApellidoMaterno" class="form-control med-input" placeholder="Segundo Apellido" maxlength="100" pattern="[A-Za-zÀ-ÖØ-öø-ÿ ]+" title="Solo se permiten letras y espacios." />
                             <label class="ms-2">Segundo Apellido</label>
                         </div>
 

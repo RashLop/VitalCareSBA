@@ -33,7 +33,7 @@
 
             <nav class="topbar-nav">
                 <a asp-page="/Index">Inicio</a>
-                <a asp-page="/Auth/Login">Login</a>
+                <a asp-page="/Auth/Login">Iniciar sesión</a>
             </nav>
         </div>
     </header>
@@ -43,15 +43,15 @@
             <div class="hero-left">
                 <span class="hero-badge">CREAR CUENTA</span>
 
-                <h1>Unete a<br />Farmacia VitalCare</h1>
+                <h1>Únete a<br />Farmacia VitalCare</h1>
 
                 <p>
-                    Registra un nuevo usuario dentro del sistema de gestion
-                    farmaceutica con una experiencia clara, moderna y profesional.
+                    Registra un nuevo usuario dentro del sistema de gestión
+                    farmacéutica con una experiencia clara, moderna y profesional.
                 </p>
 
                 <div class="hero-note">
-                    El nombre de usuario y la contrasena se generan automaticamente
+                    El nombre de usuario y la contraseña se generan automáticamente
                     al momento de registrar la cuenta y llegan por correo.
                 </div>
 
@@ -84,7 +84,7 @@
                                 <label asp-for="Registro.ApellidoPaterno">Primer apellido</label>
                                 <input type="text"
                                        asp-for="Registro.ApellidoPaterno"
-                                       placeholder="Ej. Perez"
+                                       placeholder="Ej. Pérez"
                                        required
                                        maxlength="100"
                                        pattern="[A-Za-zÀ-ÖØ-öø-ÿ ]+"
@@ -95,7 +95,7 @@
                                 <label asp-for="Registro.ApellidoMaterno">Segundo apellido (opcional)</label>
                                 <input type="text"
                                        asp-for="Registro.ApellidoMaterno"
-                                       placeholder="Ej. Gutierrez"
+                                       placeholder="Ej. Gutiérrez"
                                        maxlength="100"
                                        pattern="[A-Za-zÀ-ÖØ-öø-ÿ ]+"
                                        title="Solo se permiten letras y espacios." />
@@ -111,7 +111,7 @@
                                        required
                                        maxlength="8"
                                        pattern="\d{8}"
-                                       title="Debe ingresar 8 digitos numericos." />
+                                       title="Debe ingresar 8 dígitos numéricos." />
                             </div>
 
                             <div class="form-group">
@@ -123,7 +123,7 @@
                                        placeholder="Ej. 1A"
                                        maxlength="2"
                                        pattern="[A-Za-z0-9]{0,2}"
-                                       title="Hasta 2 caracteres alfanumericos." />
+                                       title="Hasta 2 caracteres alfanuméricos." />
                             </div>
 
                             <div class="form-group">
@@ -136,25 +136,25 @@
                                     <option value="LP">La Paz</option>
                                     <option value="OR">Oruro</option>
                                     <option value="PD">Pando</option>
-                                    <option value="PT">Potosi</option>
+                                    <option value="PT">Potosí</option>
                                     <option value="SC">Santa Cruz</option>
                                     <option value="TJ">Tarija</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="Registro.Telefono">Telefono</label>
+                                <label asp-for="Registro.Telefono">Teléfono</label>
                                 <input type="text"
                                        asp-for="Registro.Telefono"
                                        placeholder="Ej. 71234567"
                                        required
                                        maxlength="8"
                                        pattern="\d{8}"
-                                       title="Debe ingresar 8 digitos numericos." />
+                                       title="Debe ingresar 8 dígitos numéricos." />
                             </div>
 
                             <div class="form-group full-width">
-                                <label asp-for="Registro.Email">Correo electronico</label>
+                                <label asp-for="Registro.Email">Correo electrónico</label>
                                 <input type="email"
                                        asp-for="Registro.Email"
                                        placeholder="Ej. usuario@correo.com"
@@ -165,16 +165,16 @@
                                 <label asp-for="Registro.UserName">Nombre de usuario generado</label>
                                 <input type="text"
                                        asp-for="Registro.UserName"
-                                       placeholder="Se generara automaticamente"
+                                       placeholder="Se generará automáticamente"
                                        readonly
                                        class="readonly-field" />
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="Registro.Password">Contrasena generada</label>
+                                <label asp-for="Registro.Password">Contraseña generada</label>
                                 <input type="password"
                                        asp-for="Registro.Password"
-                                       placeholder="Se generara automaticamente"
+                                       placeholder="Se generará automáticamente"
                                        readonly
                                        class="readonly-field" />
                             </div>
@@ -201,7 +201,7 @@
 
                         <div class="login-link">
                             ¿Ya tienes cuenta?
-                            <a asp-page="/Auth/Login">Inicia sesion</a>
+                            <a asp-page="/Auth/Login">Inicia sesión</a>
                         </div>
                     </form>
                 </div>

@@ -17,15 +17,15 @@ namespace FrontendVitalCare.Dto.Auth
         [Required(ErrorMessage = "El carnet de identidad es obligatorio.")]
         public string Ci { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La extension es obligatoria.")]
+        [Required(ErrorMessage = "La extensión es obligatoria.")]
         public string CiExtencion { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "El telefono es obligatorio.")]
-        [RegularExpression(@"^\d{8}$", ErrorMessage = "El telefono debe contener solo digitos numericos.")]
+        [Required(ErrorMessage = "El teléfono es obligatorio.")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "El teléfono debe contener solo dígitos numéricos.")]
         public string Telefono { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "El correo electronico es obligatorio.")]
-        [EmailAddress(ErrorMessage = "El correo electronico no es valido.")]
+        [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
+        [EmailAddress(ErrorMessage = "El correo electrónico no es válido.")]
         public string Email { get; set; } = string.Empty;
 
         public string? Role { get; set; } = string.Empty;
